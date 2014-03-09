@@ -32,7 +32,7 @@ class RestContext implements Context
     }
 
     /**
-     * @When /^(?:|the )client requests (?P<method>GET|HEAD|POST|PUT|DELETE|OPTIONS) "(?P<resource>[^"]*)"$/
+     * @When /^(?:|the )client requests (?P<method>GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS) "(?P<resource>[^"]*)"$/
      */
     public function theClientRequests($method, $resource)
     {
