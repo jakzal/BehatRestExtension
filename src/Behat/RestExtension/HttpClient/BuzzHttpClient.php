@@ -3,6 +3,8 @@
 namespace Behat\RestExtension\HttpClient;
 
 use Buzz\Browser;
+use Buzz\Message\Response as BuzzResponse;
+use Behat\RestExtension\Message\Response;
 
 class BuzzHttpClient implements HttpClient
 {
@@ -34,9 +36,7 @@ class BuzzHttpClient implements HttpClient
     {
         $buzzResponse = $this->browser->get($resource, $headers);
 
-        $this->lastResponse = new Response($buzzResponse->getContent(), $buzzResponse->getStatusCode(), $buzzResponse->getHeaders());
-
-        return $this->lastResponse;
+        return $this->lastResponse = $this->createResponse($buzzResponse);
     }
 
     /**
@@ -58,6 +58,9 @@ class BuzzHttpClient implements HttpClient
      */
     public function post($resource, array $headers = array(), $content = null)
     {
+        $buzzResponse = $this->browser->post($resource, $headers, $content);
+
+        return $this->lastResponse = $this->createResponse($buzzResponse);
     }
 
     /**
@@ -99,5 +102,15 @@ class BuzzHttpClient implements HttpClient
     public function getLastResponse()
     {
         return $this->lastResponse;
+    }
+
+    /**
+     * @param BuzzResponse $buzzResponse
+     *
+     * @return Response
+     */
+    private function createResponse(BuzzResponse $buzzResponse)
+    {
+        return new Response($buzzResponse->getContent(), $buzzResponse->getStatusCode(), $buzzResponse->getHeaders());
     }
 }

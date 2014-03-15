@@ -2,6 +2,8 @@
 
 namespace Behat\RestExtension\HttpClient;
 
+use Behat\RestExtension\Message\Response;
+
 interface HttpClient
 {
     /**

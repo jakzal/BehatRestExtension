@@ -2,6 +2,13 @@ default:
   suites:
     default:
       path: %paths.base%/features
-      contexts: [ApplicationContext, Behat\RestExtension\Context\RestContext]
+      contexts:
+        - ApplicationContext
+        - Behat\RestExtension\Context\RestContext:
+            baseUrl: 'http://localhost:8000'
+      filters:
+        tags: "~@wip"
   extensions:
-    Behat\RestExtension\Extension: ~
+    Behat\RestExtension\Extension:
+      buzz: ~
+      #guzzle: ~

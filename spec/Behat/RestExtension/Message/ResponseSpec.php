@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Behat\RestExtension\HttpClient;
+namespace spec\Behat\RestExtension\Message;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

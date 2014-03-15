@@ -4,9 +4,10 @@ namespace Behat\RestExtension\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
-use Behat\RestExtension\HttpClient\BuzzHttpClient;
 use Behat\RestExtension\HttpClient\HttpClient;
-use Buzz\Browser;
+use Behat\RestExtension\Message\Request;
+use Behat\RestExtension\Message\RequestParser;
+use Behat\RestExtension\Message\Response;
 
 class RestContext implements Context
 {
@@ -21,14 +22,20 @@ class RestContext implements Context
     private $baseUrl;
 
     /**
-     * @param string     $baseUrl
-     * @param HttpClient $httpClient
+     * @var RequestParser
      */
-    public function __construct($baseUrl = null, HttpClient $httpClient = null)
+    private $requestParser;
+
+    /**
+     * @param string        $baseUrl
+     * @param HttpClient    $httpClient
+     * @param RequestParser $requestParser
+     */
+    public function __construct($baseUrl, HttpClient $httpClient, RequestParser $requestParser)
     {
-        // @todo implement an argument resolver and inject the baseUrl
-        $this->baseUrl = $baseUrl ? $baseUrl : 'http://localhost:8000';
-        $this->httpClient = $httpClient ? $httpClient : new BuzzHttpClient(new Browser());
+        $this->baseUrl = $baseUrl;
+        $this->httpClient = $httpClient;
+        $this->requestParser = $requestParser;
     }
 
     /**
@@ -36,9 +43,18 @@ class RestContext implements Context
      */
     public function theClientRequests($method, $resource)
     {
-        $method = strtolower($method);
+        $this->send(new Request($method, $resource));
+    }
 
-        $this->httpClient->$method($this->baseUrl.$resource);
+    /**
+     * @When /^(?:|the )client requests (?P<method>POST|PUT|OPTIONS) "(?P<resource>[^"]*)" with:$/
+     */
+    public function theClientRequestsWith($method, $resource, PyStringNode $content = null)
+    {
+        $request = new Request($method, $resource);
+        $this->requestParser->parse((string) $content, $request);
+
+        $this->send($request);
     }
 
     /**
@@ -47,6 +63,10 @@ class RestContext implements Context
     public function theResponseShouldBeJson($statusCode, PyStringNode $content)
     {
         $response = $this->httpClient->getLastResponse();
+
+        if (null === $response) {
+            throw new \LogicException('No request was made');
+        }
 
         if ((int) $statusCode !== $response->getStatusCode()) {
             throw new \LogicException(sprintf('Expected %d status code but %d received', $statusCode, $response->getStatusCode()));
@@ -61,5 +81,22 @@ class RestContext implements Context
 
             throw new \LogicException($message);
         }
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    private function send(Request $request)
+    {
+        $method = strtolower($request->getMethod());
+        $resource = $this->baseUrl . $request->getResource();
+
+        if (in_array($method, array('get', 'head'))) {
+            return $this->httpClient->$method($resource);
+        }
+
+        return $this->httpClient->$method($resource, $request->getHeaders(), $request->getBody());
     }
 }

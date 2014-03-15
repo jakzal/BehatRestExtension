@@ -12,6 +12,10 @@ class BuzzHttpClientSpec extends ObjectBehavior
     function let(Browser $browser, Response $buzzResponse)
     {
         $this->beConstructedWith($browser);
+
+        $buzzResponse->getContent()->willReturn('Body');
+        $buzzResponse->getStatusCode()->willReturn(200);
+        $buzzResponse->getHeaders()->willReturn(array('Content-Type' => 'application/json'));
     }
 
     function it_is_a_rest_http_client()
@@ -19,31 +23,52 @@ class BuzzHttpClientSpec extends ObjectBehavior
         $this->shouldHaveType('Behat\RestExtension\HttpClient\HttpClient');
     }
 
-    function it_returns_a_response(Browser $browser, Response $buzzResponse)
+    function it_returns_a_response_on_get_request(Browser $browser, Response $buzzResponse)
     {
-        $buzzResponse->getContent()->willReturn('Body');
-        $buzzResponse->getStatusCode()->willReturn(200);
-        $buzzResponse->getHeaders()->willReturn(array('Content-Type' => 'application/json'));
-
         $browser->get('/events', array())->willReturn($buzzResponse);
 
         $response = $this->get('/events');
-        $response->shouldBeAnInstanceOf('Behat\RestExtension\HttpClient\Response');
-        $response->getContent()->shouldReturn('Body');
-        $response->getStatusCode()->shouldReturn(200);
-        $response->getHeader('Content-Type')->shouldReturn('application/json');
+
+        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
     }
 
-    function it_stores_the_last_response(Browser $browser, Response $buzzResponse)
+    function it_returns_a_response_on_post_request(Browser $browser, Response $buzzResponse)
     {
-        $buzzResponse->getContent()->willReturn('Body');
-        $buzzResponse->getStatusCode()->willReturn(200);
-        $buzzResponse->getHeaders()->willReturn(array('Content-Type' => 'application/json'));
+        $browser->post('/events', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
 
+        $response = $this->post('/events', array('Accept' => 'application/json'), 'content');
+
+        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
+    }
+
+    function it_makes_the_last_response_available(Browser $browser, Response $buzzResponse)
+    {
         $browser->get('/events', array())->willReturn($buzzResponse);
 
         $response = $this->get('/events');
 
         $this->getLastResponse()->shouldReturn($response);
+    }
+
+    public function getMatchers()
+    {
+        return array(
+            'beAResponse' => function ($response, $content, $statusCode, $headers) {
+                if (!$response instanceof \Behat\RestExtension\Message\Response) {
+                    return false;
+                }
+
+                if (!$response->getContent() === $content || !$response->getStatusCode() === $statusCode) {
+                    return false;
+                }
+
+                $headersMatch = true;
+                foreach ($headers as $name => $value) {
+                    $headersMatch = $headersMatch && $response->getHeader($name) === $value;
+                }
+
+                return $headersMatch;
+            }
+        );
     }
 }

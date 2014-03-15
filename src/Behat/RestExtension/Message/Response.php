@@ -1,6 +1,6 @@
 <?php
 
-namespace Behat\RestExtension\HttpClient;
+namespace Behat\RestExtension\Message;
 
 class Response
 {
