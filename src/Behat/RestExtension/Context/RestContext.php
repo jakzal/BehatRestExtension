@@ -4,6 +4,8 @@ namespace Behat\RestExtension\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\RestExtension\Differ\Differ;
+use Behat\RestExtension\Differ\SimpleJsonDiffer;
 use Behat\RestExtension\HttpClient\HttpClient;
 use Behat\RestExtension\Message\Request;
 use Behat\RestExtension\Message\RequestParser;
@@ -27,15 +29,23 @@ class RestContext implements Context
     private $requestParser;
 
     /**
+     * @var Differ
+     */
+    private $differ;
+
+    /**
      * @param string        $baseUrl
      * @param HttpClient    $httpClient
      * @param RequestParser $requestParser
+     * @param Differ        $differ
      */
-    public function __construct($baseUrl, HttpClient $httpClient, RequestParser $requestParser)
+    public function __construct($baseUrl, HttpClient $httpClient, RequestParser $requestParser, Differ $differ = null)
     {
         $this->baseUrl = $baseUrl;
         $this->httpClient = $httpClient;
         $this->requestParser = $requestParser;
+        // @tood inject the differ
+        $this->differ = $differ ? $differ : new SimpleJsonDiffer();
     }
 
     /**
@@ -72,14 +82,9 @@ class RestContext implements Context
             throw new \LogicException(sprintf('Expected %d status code but %d received', $statusCode, $response->getStatusCode()));
         }
 
-        // @todo introduce a differ
-        $receivedJson = json_decode($response->getContent());
-        $expectedJson = json_decode($content);
 
-        if ($receivedJson != $expectedJson) {
-            $message = sprintf('Expected to get "%s" but received: "%s"', json_encode($expectedJson, JSON_PRETTY_PRINT), json_encode($receivedJson, JSON_PRETTY_PRINT));
-
-            throw new \LogicException($message);
+        if ($diff = $this->differ->diff($content, $response->getContent())) {
+            throw new \LogicException($diff);
         }
     }
 

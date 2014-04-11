@@ -3,6 +3,7 @@
 namespace spec\Behat\RestExtension\Context;
 
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\RestExtension\Differ\Differ;
 use Behat\RestExtension\HttpClient\HttpClient;
 use Behat\RestExtension\Message\RequestParser;
 use Behat\RestExtension\Message\Response;
@@ -11,11 +12,12 @@ use Prophecy\Argument;
 
 class RestContextSpec extends ObjectBehavior
 {
-    function let(HttpClient $httpClient, RequestParser $requestParser, Response $response)
+    function let(HttpClient $httpClient, RequestParser $requestParser, Response $response, Differ $differ)
     {
-        $this->beConstructedWith('http://localhost', $httpClient, $requestParser);
+        $this->beConstructedWith('http://localhost', $httpClient, $requestParser, $differ);
 
         $httpClient->getLastResponse()->willReturn($response);
+        $response->getStatusCode()->willReturn(200);
     }
 
     function it_is_a_behat_context()
@@ -58,6 +60,20 @@ class RestContextSpec extends ObjectBehavior
         $httpClient->getLastResponse()->willReturn(null);
 
         $this->shouldThrow(new \LogicException('No request was made'))
+            ->duringTheResponseShouldBeJson(200, $content);
+    }
+
+    function it_throws_an_exception_if_the_expected_response_is_different_to_the_actual(Response $response, PyStringNode $content, Differ $differ)
+    {
+        $originalContent = '1';
+        $returnedContent = '2';
+
+        $content->__toString()->willReturn($originalContent);
+        $response->getContent()->willReturn($returnedContent);
+
+        $differ->diff($originalContent, $returnedContent)->willReturn('--');
+
+        $this->shouldThrow(new \LogicException('--'))
             ->duringTheResponseShouldBeJson(200, $content);
     }
 }
