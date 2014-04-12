@@ -4,6 +4,7 @@ default:
       path: %paths.base%/features
       contexts:
         - ApplicationContext
+        - PhpServerContext
         - Behat\RestExtension\Context\RestContext:
             baseUrl: 'http://localhost:8000'
       filters:

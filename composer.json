@@ -18,7 +18,8 @@
     "require-dev": {
         "phpspec/phpspec": "~2.0",
         "guzzle/guzzle": "~3.8",
-        "kriswallsmith/buzz": "~0.10"
+        "kriswallsmith/buzz": "~0.10",
+        "symfony/process": "~2.3"
     },
     "suggest": {
         "guzzle/guzzle": "for guzzle integration",
