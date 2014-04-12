@@ -113,6 +113,15 @@ class Extension implements BehatExtension
         $definition->addArgument(new Reference('behat.rest.message.request_parser'));
         $definition->addTag('context.argument_resolver');
         $container->setDefinition('behat.rest.argument_resolver.request_parser', $definition);
+
+        $differDefinition = new Definition('Behat\RestExtension\Differ\SimpleJsonDiffer');
+        $container->setDefinition('behat.rest.differ.simple_json_differ', $differDefinition);
+        $container->setAlias('behat.rest.differ', 'behat.rest.differ.simple_json_differ');
+
+        $definition = new Definition('Behat\RestExtension\Context\Argument\DifferResolver');
+        $definition->addArgument(new Reference('behat.rest.differ'));
+        $definition->addTag('context.argument_resolver');
+        $container->setDefinition('behat.rest.argument_resolver.differ', $definition);
     }
 
     /**

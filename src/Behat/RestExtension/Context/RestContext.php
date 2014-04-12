@@ -39,13 +39,12 @@ class RestContext implements Context
      * @param RequestParser $requestParser
      * @param Differ        $differ
      */
-    public function __construct($baseUrl, HttpClient $httpClient, RequestParser $requestParser, Differ $differ = null)
+    public function __construct($baseUrl, HttpClient $httpClient, RequestParser $requestParser, Differ $differ)
     {
         $this->baseUrl = $baseUrl;
         $this->httpClient = $httpClient;
         $this->requestParser = $requestParser;
-        // @tood inject the differ
-        $this->differ = $differ ? $differ : new SimpleJsonDiffer();
+        $this->differ = $differ;
     }
 
     /**
