@@ -101,27 +101,21 @@ class Extension implements BehatExtension
         $container->setDefinition('behat.rest.http_client.'.$httpClientName, $httpClientDefinition);
         $container->setAlias('behat.rest.http_client', 'behat.rest.http_client.'.$httpClientName);
 
-        $definition = new Definition('Behat\RestExtension\Context\Argument\HttpClientResolver');
-        $definition->addArgument(new Reference('behat.rest.http_client'));
-        $definition->addTag('context.argument_resolver');
-        $container->setDefinition('behat.rest.argument_resolver.http_client', $definition);
-
         $requestParserDefinition = new Definition('Behat\RestExtension\Message\RequestParser');
         $container->setDefinition('behat.rest.message.request_parser', $requestParserDefinition);
-
-        $definition = new Definition('Behat\RestExtension\Context\Argument\RequestParserResolver');
-        $definition->addArgument(new Reference('behat.rest.message.request_parser'));
-        $definition->addTag('context.argument_resolver');
-        $container->setDefinition('behat.rest.argument_resolver.request_parser', $definition);
 
         $differDefinition = new Definition('Behat\RestExtension\Differ\SimpleJsonDiffer');
         $container->setDefinition('behat.rest.differ.simple_json_differ', $differDefinition);
         $container->setAlias('behat.rest.differ', 'behat.rest.differ.simple_json_differ');
 
-        $definition = new Definition('Behat\RestExtension\Context\Argument\DifferResolver');
-        $definition->addArgument(new Reference('behat.rest.differ'));
+        $definition = new Definition('Behat\RestExtension\Context\Argument\ConfigurableArgumentResolver');
+        $definition->addArgument(array(
+            'Behat\RestExtension\HttpClient\HttpClient' => new Reference('behat.rest.http_client'),
+            'Behat\RestExtension\Message\RequestParser' => new Reference('behat.rest.message.request_parser'),
+            'Behat\RestExtension\Differ\Differ' => new Reference('behat.rest.differ')
+        ));
         $definition->addTag('context.argument_resolver');
-        $container->setDefinition('behat.rest.argument_resolver.differ', $definition);
+        $container->setDefinition('behat.rest.argument_resolver', $definition);
     }
 
     /**
