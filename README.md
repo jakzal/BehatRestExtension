@@ -1,1 +1,3 @@
 # RestExtension
+
+Proof of concept.
