@@ -14,7 +14,7 @@ Feature: Application gets a list of events
     """
     [
       {
-        "id": "@integer@",
+        "id": @integer@,
         "name": "SymfonyCon 2013",
         "location": "Warsaw"
       },
