@@ -14,17 +14,17 @@ Feature: Application gets a list of events
     """
     [
       {
-        "id": "1",
+        "id": "@integer@",
         "name": "SymfonyCon 2013",
         "location": "Warsaw"
       },
       {
-        "id": "2",
+        "id": 2,
         "name": "SymfonyDay Portugal 2014",
         "location": "Lisbon"
       },
       {
-        "id": "3",
+        "id": 3,
         "name": "SymfonyLive London 2014",
         "location": "London"
       }

@@ -5,7 +5,6 @@ namespace Behat\RestExtension\Context;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\RestExtension\Differ\Differ;
-use Behat\RestExtension\Differ\SimpleJsonDiffer;
 use Behat\RestExtension\HttpClient\HttpClient;
 use Behat\RestExtension\Message\Request;
 use Behat\RestExtension\Message\RequestParser;
@@ -69,7 +68,7 @@ class RestContext implements Context
     /**
      * @Then /^(?:|the )response should be (?:|a )(?P<statusCode>[0-9]{3}) with json:$/
      */
-    public function theResponseShouldBeJson($statusCode, PyStringNode $content)
+    public function theResponseShouldBe($statusCode, PyStringNode $content)
     {
         $response = $this->httpClient->getLastResponse();
 

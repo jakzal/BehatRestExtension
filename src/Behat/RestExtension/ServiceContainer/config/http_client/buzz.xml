@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="behat.rest.http_client.buzz" class="Behat\RestExtension\HttpClient\BuzzHttpClient">
+            <argument type="service">
+                <service class="Buzz\Browser" />
+            </argument>
+        </service>
+    </services>
+</container>

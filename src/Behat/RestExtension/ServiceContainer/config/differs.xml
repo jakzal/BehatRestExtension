@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="behat.rest.differ.simple_json" class="Behat\RestExtension\Differ\SimpleJsonDiffer"/>
+
+        <service id="behat.rest.differ.coduo" class="Behat\RestExtension\Differ\CoduoDiffer">
+            <argument type="service" id="behat.rest.differ.coduo.matcher"/>
+        </service>
+
+        <service id="behat.rest.differ.coduo.matcher" class="Coduo\PHPMatcher\Matcher">
+            <argument type="service" id="behat.rest.differ.coduo.matcher.chain"/>
+        </service>
+        <service id="behat.rest.differ.coduo.matcher.chain" class="Coduo\PHPMatcher\Matcher\ChainMatcher"
+                 public="false">
+            <argument type="collection">
+                <argument type="service" id="behat.rest.differ.coduo.matcher.scalar"/>
+                <argument type="service" id="behat.rest.differ.coduo.matcher.array"/>
+                <argument type="service" id="behat.rest.differ.coduo.matcher.json"/>
+            </argument>
+        </service>
+        <service id="behat.rest.differ.coduo.matcher.json" class="Coduo\PHPMatcher\Matcher\JsonMatcher" public="false">
+            <argument type="service" id="behat.rest.differ.coduo.matcher.array"/>
+        </service>
+        <service id="behat.rest.differ.coduo.matcher.array" class="Coduo\PHPMatcher\Matcher\ArrayMatcher"
+                 public="false">
+            <argument type="service" id="behat.rest.differ.coduo.matcher.scalar"/>
+        </service>
+        <service id="behat.rest.differ.coduo.matcher.scalar" class="Coduo\PHPMatcher\Matcher\ChainMatcher"
+                 public="false">
+            <argument type="collection">
+                <argument type="service">
+                    <service class="Coduo\PHPMatcher\Matcher\ExpressionMatcher"/>
+                </argument>
+                <argument type="service">
+                    <service class="Coduo\PHPMatcher\Matcher\TypeMatcher"/>
+                </argument>
+                <argument type="service">
+                    <service class="Coduo\PHPMatcher\Matcher\ScalarMatcher"/>
+                </argument>
+                <argument type="service">
+                    <service class="Coduo\PHPMatcher\Matcher\WildcardMatcher"/>
+                </argument>
+            </argument>
+        </service>
+    </services>
+</container>
