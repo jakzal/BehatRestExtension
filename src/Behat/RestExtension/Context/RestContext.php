@@ -5,7 +5,6 @@ namespace Behat\RestExtension\Context;
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\RestExtension\Differ\Differ;
-use Behat\RestExtension\Differ\SimpleJsonDiffer;
 use Behat\RestExtension\HttpClient\HttpClient;
 use Behat\RestExtension\Message\Request;
 use Behat\RestExtension\Message\RequestParser;
@@ -69,7 +68,7 @@ class RestContext implements Context
     /**
      * @Then /^(?:|the )response should be (?:|a )(?P<statusCode>[0-9]{3}) with json:$/
      */
-    public function theResponseShouldBeJson($statusCode, PyStringNode $content)
+    public function theResponseShouldBe($statusCode, PyStringNode $content)
     {
         $response = $this->httpClient->getLastResponse();
 
@@ -81,8 +80,7 @@ class RestContext implements Context
             throw new \LogicException(sprintf('Expected %d status code but %d received', $statusCode, $response->getStatusCode()));
         }
 
-
-        if ($diff = $this->differ->diff($content, $response->getContent())) {
+        if ($diff = $this->differ->diff($response->getContent(), $content)) {
             throw new \LogicException($diff);
         }
     }

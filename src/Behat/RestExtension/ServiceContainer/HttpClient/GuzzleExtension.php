@@ -3,8 +3,9 @@
 namespace Behat\RestExtension\ServiceContainer\HttpClient;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class GuzzleFactory implements HttpClientFactory
+class GuzzleExtension implements Extension
 {
     /**
      * {@inheritDoc}
@@ -24,7 +25,7 @@ class GuzzleFactory implements HttpClientFactory
     /**
      * {@inheritDoc}
      */
-    public function build(array $config)
+    public function load(ContainerBuilder $container, array $config)
     {
     }
 }

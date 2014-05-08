@@ -2,29 +2,35 @@
 
 namespace Behat\RestExtension;
 
-use Behat\RestExtension\ServiceContainer\HttpClient\BuzzFactory;
-use Behat\RestExtension\ServiceContainer\HttpClient\GuzzleFactory;
-use Behat\RestExtension\ServiceContainer\HttpClient\HttpClientFactory;
+use Behat\RestExtension\ServiceContainer\HttpClient\BuzzExtension;
+use Behat\RestExtension\ServiceContainer\HttpClient\GuzzleExtension;
+use Behat\RestExtension\ServiceContainer\HttpClient\Extension as HttpClientExtension;
 use Behat\Testwork\ServiceContainer\Extension as BehatExtension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class Extension implements BehatExtension
 {
-    private $httpClientFactories = array();
+    /**
+     * @var HttpClientExtension[]
+     */
+    private $httpClientExtensions = array();
 
     public function __construct()
     {
-        $this->registerHttpClientFactory(new BuzzFactory());
-        $this->registerHttpClientFactory(new GuzzleFactory());
+        $this->registerHttpClientExtension(new BuzzExtension());
+        $this->registerHttpClientExtension(new GuzzleExtension());
     }
 
-    public function registerHttpClientFactory(HttpClientFactory $factory)
+    /**
+     * @param HttpClientExtension $httpClientExtension
+     */
+    public function registerHttpClientExtension(HttpClientExtension $httpClientExtension)
     {
-        $this->httpClientFactories[$factory->getName()] = $factory;
+        $this->httpClientExtensions[$httpClientExtension->getName()] = $httpClientExtension;
     }
 
     /**
@@ -47,7 +53,7 @@ class Extension implements BehatExtension
      */
     public function configure(ArrayNodeDefinition $builder)
     {
-        $allowedClients = array_keys($this->httpClientFactories);
+        $allowedClients = array_keys($this->httpClientExtensions);
 
         $builder
             ->beforeNormalization()
@@ -82,10 +88,13 @@ class Extension implements BehatExtension
                 })
             ->end();
 
-        foreach ($this->httpClientFactories as $factory) {
-            $factoryNode = $httpClientBuilder->children()->arrayNode($factory->getName())->canBeUnset();
+        $differ = $builder->children()->scalarNode('differ');
+        $differ->defaultValue('coduo');
 
-            $factory->configure($factoryNode);
+        foreach ($this->httpClientExtensions as $extension) {
+            $extensionNode = $httpClientBuilder->children()->arrayNode($extension->getName())->canBeUnset();
+
+            $extension->configure($extensionNode);
         }
     }
 
@@ -94,28 +103,13 @@ class Extension implements BehatExtension
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $httpClient = $config['http_client'];
-        $httpClientName = key($httpClient);
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/ServiceContainer/config'));
+        $loader->load('services.xml');
+        $loader->load('differs.xml');
 
-        $httpClientDefinition = $this->httpClientFactories[$httpClientName]->build($httpClient[$httpClientName]);
-        $container->setDefinition('behat.rest.http_client.'.$httpClientName, $httpClientDefinition);
-        $container->setAlias('behat.rest.http_client', 'behat.rest.http_client.'.$httpClientName);
+        $container->setAlias('behat.rest.differ', 'behat.rest.differ.'.$config['differ']);
 
-        $requestParserDefinition = new Definition('Behat\RestExtension\Message\RequestParser');
-        $container->setDefinition('behat.rest.message.request_parser', $requestParserDefinition);
-
-        $differDefinition = new Definition('Behat\RestExtension\Differ\SimpleJsonDiffer');
-        $container->setDefinition('behat.rest.differ.simple_json_differ', $differDefinition);
-        $container->setAlias('behat.rest.differ', 'behat.rest.differ.simple_json_differ');
-
-        $definition = new Definition('Behat\RestExtension\Context\Argument\ConfigurableArgumentResolver');
-        $definition->addArgument(array(
-            'Behat\RestExtension\HttpClient\HttpClient' => new Reference('behat.rest.http_client'),
-            'Behat\RestExtension\Message\RequestParser' => new Reference('behat.rest.message.request_parser'),
-            'Behat\RestExtension\Differ\Differ' => new Reference('behat.rest.differ')
-        ));
-        $definition->addTag('context.argument_resolver');
-        $container->setDefinition('behat.rest.argument_resolver', $definition);
+        $this->loadHttpClientDefinition($container, $config);
     }
 
     /**
@@ -123,5 +117,26 @@ class Extension implements BehatExtension
      */
     public function process(ContainerBuilder $container)
     {
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param array            $config
+     *
+     * @throws \RuntimeException
+     */
+    private function loadHttpClientDefinition(ContainerBuilder $container, array $config)
+    {
+        $httpClient = $config['http_client'];
+        $httpClientName = key($httpClient);
+        $httpClientServiceId = 'behat.rest.http_client.' . $httpClientName;
+
+        $this->httpClientExtensions[$httpClientName]->load($container, $httpClient[$httpClientName]);
+
+        if (!$container->hasDefinition($httpClientServiceId)) {
+            throw new \RuntimeException(sprintf('Expected the %s http client extension to register a "%s" service', $httpClientName, $httpClientServiceId));
+        }
+
+        $container->setAlias('behat.rest.http_client', $httpClientServiceId);
     }
 }

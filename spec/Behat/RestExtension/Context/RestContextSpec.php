@@ -52,7 +52,7 @@ class RestContextSpec extends ObjectBehavior
         $response->getStatusCode()->willReturn(201);
 
         $this->shouldThrow(new \LogicException('Expected 200 status code but 201 received'))
-            ->duringTheResponseShouldBeJson(200, $content);
+            ->duringTheResponseShouldBe(200, $content);
     }
 
     function it_throws_an_exception_if_there_was_no_request_made(HttpClient $httpClient, PyStringNode $content)
@@ -60,7 +60,7 @@ class RestContextSpec extends ObjectBehavior
         $httpClient->getLastResponse()->willReturn(null);
 
         $this->shouldThrow(new \LogicException('No request was made'))
-            ->duringTheResponseShouldBeJson(200, $content);
+            ->duringTheResponseShouldBe(200, $content);
     }
 
     function it_throws_an_exception_if_the_expected_response_is_different_to_the_actual(Response $response, PyStringNode $content, Differ $differ)
@@ -71,9 +71,9 @@ class RestContextSpec extends ObjectBehavior
         $content->__toString()->willReturn($originalContent);
         $response->getContent()->willReturn($returnedContent);
 
-        $differ->diff($originalContent, $returnedContent)->willReturn('--');
+        $differ->diff($returnedContent, $originalContent)->willReturn('--');
 
         $this->shouldThrow(new \LogicException('--'))
-            ->duringTheResponseShouldBeJson(200, $content);
+            ->duringTheResponseShouldBe(200, $content);
     }
 }

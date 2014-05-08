@@ -13,7 +13,7 @@
     "require": {
         "php": ">=5.3.3",
         "behat/behat": "~3.0-RC2@dev",
-        "symfony/config": "~2.2"
+        "coduo/php-matcher": "~1.0"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0",

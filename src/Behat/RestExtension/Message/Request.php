@@ -2,7 +2,6 @@
 
 namespace Behat\RestExtension\Message;
 
-// @todo validate method
 class Request
 {
     /**

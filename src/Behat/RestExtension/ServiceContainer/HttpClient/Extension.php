@@ -3,9 +3,9 @@
 namespace Behat\RestExtension\ServiceContainer\HttpClient;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-interface HttpClientFactory
+interface Extension
 {
     /**
      * @return string
@@ -18,9 +18,8 @@ interface HttpClientFactory
     public function configure(ArrayNodeDefinition $builder);
 
     /**
-     * @param array $config
-     *
-     * @return Definition
+     * @param ContainerBuilder $container
+     * @param array            $config
      */
-    public function build(array $config);
+    public function load(ContainerBuilder $container, array $config);
 }
