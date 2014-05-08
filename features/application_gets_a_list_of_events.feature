@@ -19,7 +19,7 @@ Feature: Application gets a list of events
         "location": "Warsaw"
       },
       {
-        "id": 2,
+        "id": "expr(value > 1)",
         "name": "SymfonyDay Portugal 2014",
         "location": "Lisbon"
       },
