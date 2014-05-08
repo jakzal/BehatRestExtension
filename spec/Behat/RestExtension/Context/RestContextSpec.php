@@ -71,7 +71,7 @@ class RestContextSpec extends ObjectBehavior
         $content->__toString()->willReturn($originalContent);
         $response->getContent()->willReturn($returnedContent);
 
-        $differ->diff($originalContent, $returnedContent)->willReturn('--');
+        $differ->diff($returnedContent, $originalContent)->willReturn('--');
 
         $this->shouldThrow(new \LogicException('--'))
             ->duringTheResponseShouldBeJson(200, $content);

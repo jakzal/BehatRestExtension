@@ -20,9 +20,9 @@ class SimpleJsonDifferSpec extends ObjectBehavior
     function it_returns_a_message_with_bot_strings_pretty_formatted()
     {
         $message = 'Expected to get "{
-    "a": 1
-}" but received: "{
     "b": 2
+}" but received: "{
+    "a": 1
 }"';
 
         $this->diff('{"a": 1}', '{"b": 2}')->shouldReturn($message);
