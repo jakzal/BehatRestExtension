@@ -51,7 +51,7 @@ class RestContext implements Context
      */
     public function theClientRequests($method, $resource)
     {
-        $this->send(new Request($method, $this->baseUrl.$resource));
+        $this->httpClient->send(new Request($method, $this->baseUrl.$resource));
     }
 
     /**
@@ -62,7 +62,7 @@ class RestContext implements Context
         $request = new Request($method, $this->baseUrl.$resource);
         $this->requestParser->parse((string) $content, $request);
 
-        $this->send($request);
+        $this->httpClient->send($request);
     }
 
     /**
@@ -83,15 +83,5 @@ class RestContext implements Context
         if ($diff = $this->differ->diff($response->getContent(), $content)) {
             throw new \LogicException($diff);
         }
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    private function send(Request $request)
-    {
-        return $this->httpClient->send($request);
     }
 }
