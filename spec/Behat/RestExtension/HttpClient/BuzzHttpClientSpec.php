@@ -64,18 +64,18 @@ class BuzzHttpClientSpec extends ObjectBehavior
     public function getMatchers()
     {
         return array(
-            'beAResponse' => function ($response, $content, $statusCode, $headers) {
-                if (!$response instanceof \Behat\RestExtension\Message\Response) {
+            'beAResponse' => function ($body, $content, $statusCode, $headers) {
+                if (!$body instanceof \Behat\RestExtension\Message\Response) {
                     return false;
                 }
 
-                if (!$response->getContent() === $content || !$response->getStatusCode() === $statusCode) {
+                if (!$body->getBody() === $content || !$body->getStatusCode() === $statusCode) {
                     return false;
                 }
 
                 $headersMatch = true;
                 foreach ($headers as $name => $value) {
-                    $headersMatch = $headersMatch && $response->getHeader($name) === $value;
+                    $headersMatch = $headersMatch && $body->getHeader($name) === $value;
                 }
 
                 return $headersMatch;

@@ -57,10 +57,10 @@ class RestContext implements Context
     /**
      * @When /^(?:|the )client requests (?P<method>POST|PUT|OPTIONS) "(?P<resource>[^"]*)" with:$/
      */
-    public function theClientRequestsWith($method, $resource, PyStringNode $content = null)
+    public function theClientRequestsWith($method, $resource, PyStringNode $body = null)
     {
         $request = new Request($method, $this->baseUrl.$resource);
-        $this->requestParser->parse((string) $content, $request);
+        $this->requestParser->parse((string) $body, $request);
 
         $this->httpClient->send($request);
     }
@@ -68,7 +68,7 @@ class RestContext implements Context
     /**
      * @Then /^(?:|the )response should be (?:|a )(?P<statusCode>[0-9]{3}) with json:$/
      */
-    public function theResponseShouldBe($statusCode, PyStringNode $content)
+    public function theResponseShouldBe($statusCode, PyStringNode $body)
     {
         $response = $this->httpClient->getLastResponse();
 
@@ -80,7 +80,7 @@ class RestContext implements Context
             throw new \LogicException(sprintf('Expected %d status code but %d received', $statusCode, $response->getStatusCode()));
         }
 
-        if ($diff = $this->differ->diff($response->getContent(), $content)) {
+        if ($diff = $this->differ->diff($response->getBody(), $body)) {
             throw new \LogicException($diff);
         }
     }

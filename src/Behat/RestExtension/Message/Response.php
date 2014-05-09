@@ -7,7 +7,7 @@ class Response
     /**
      * @var string
      */
-    private $content;
+    private $body;
 
     /**
      * @var integer
@@ -20,13 +20,13 @@ class Response
     private $headers;
 
     /**
-     * @param string  $content
+     * @param string  $body
      * @param integer $statusCode
      * @param array   $headers
      */
-    public function __construct($content, $statusCode, array $headers = array())
+    public function __construct($body, $statusCode, array $headers = array())
     {
-        $this->content = $content;
+        $this->body = $body;
         $this->statusCode = $statusCode;
         $this->headers = $headers;
     }
@@ -34,9 +34,9 @@ class Response
     /**
      * @return string
      */
-    public function getContent()
+    public function getBody()
     {
-        return $this->content;
+        return $this->body;
     }
 
     /**

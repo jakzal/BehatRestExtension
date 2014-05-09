@@ -17,9 +17,9 @@ class ResponseSpec extends ObjectBehavior
         $this->getStatusCode()->shouldReturn(200);
     }
 
-    function it_exposes_the_content()
+    function it_exposes_the_message_body()
     {
-        $this->getContent()->shouldReturn('Body');
+        $this->getBody()->shouldReturn('Body');
     }
 
     function it_exposes_the_headers()

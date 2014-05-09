@@ -48,33 +48,33 @@ class RestContextSpec extends ObjectBehavior
         $this->theClientRequestsWith('POST', '/events', $body);
     }
 
-    function it_throws_an_exception_if_expected_status_code_does_not_match_the_response(Response $response, PyStringNode $content)
+    function it_throws_an_exception_if_expected_status_code_does_not_match_the_response(Response $response, PyStringNode $body)
     {
         $response->getStatusCode()->willReturn(201);
 
         $this->shouldThrow(new \LogicException('Expected 200 status code but 201 received'))
-            ->duringTheResponseShouldBe(200, $content);
+            ->duringTheResponseShouldBe(200, $body);
     }
 
-    function it_throws_an_exception_if_there_was_no_request_made(HttpClient $httpClient, PyStringNode $content)
+    function it_throws_an_exception_if_there_was_no_request_made(HttpClient $httpClient, PyStringNode $body)
     {
         $httpClient->getLastResponse()->willReturn(null);
 
         $this->shouldThrow(new \LogicException('No request was made'))
-            ->duringTheResponseShouldBe(200, $content);
+            ->duringTheResponseShouldBe(200, $body);
     }
 
-    function it_throws_an_exception_if_the_expected_response_is_different_to_the_actual(Response $response, PyStringNode $content, Differ $differ)
+    function it_throws_an_exception_if_the_expected_response_is_different_to_the_actual(Response $response, PyStringNode $body, Differ $differ)
     {
-        $originalContent = '1';
-        $returnedContent = '2';
+        $bodyPattern = '1';
+        $returnedBody = '2';
 
-        $content->__toString()->willReturn($originalContent);
-        $response->getContent()->willReturn($returnedContent);
+        $body->__toString()->willReturn($bodyPattern);
+        $response->getBody()->willReturn($returnedBody);
 
-        $differ->diff($returnedContent, $originalContent)->willReturn('--');
+        $differ->diff($returnedBody, $bodyPattern)->willReturn('--');
 
         $this->shouldThrow(new \LogicException('--'))
-            ->duringTheResponseShouldBe(200, $content);
+            ->duringTheResponseShouldBe(200, $body);
     }
 }

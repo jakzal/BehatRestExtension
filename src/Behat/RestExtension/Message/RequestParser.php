@@ -56,8 +56,8 @@ class RequestParser
         }
 
         $messageParts = preg_split('/^$/m', $message);
-        $content = 2 === count($messageParts) ? $messageParts[1] : $messageParts[0];
-        $request->setBody(trim($content));
+        $body = 2 === count($messageParts) ? $messageParts[1] : $messageParts[0];
+        $request->setBody(trim($body));
     }
 
     /**
