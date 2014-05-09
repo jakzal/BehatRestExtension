@@ -25,13 +25,15 @@ class Request
     private $headers = array();
 
     /**
-     * @param string $method
-     * @param string $resource
+     * @param string      $method
+     * @param string      $resource
+     * @param string|null $body
      */
-    public function __construct($method, $resource)
+    public function __construct($method, $resource, $body = null)
     {
         $this->method = $method;
         $this->resource = $resource;
+        $this->body = $body;
     }
 
     /**

@@ -9,7 +9,7 @@ class RequestSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('GET', '/');
+        $this->beConstructedWith('GET', '/', '[]');
     }
 
     function it_exposes_the_method()
@@ -24,9 +24,14 @@ class RequestSpec extends ObjectBehavior
 
     function it_exposes_the_body()
     {
-        $this->setBody('[]');
-
         $this->getBody()->shouldReturn('[]');
+    }
+
+    function it_does_not_require_body()
+    {
+        $this->beConstructedWith('GET', '/');
+
+        $this->getBody()->shouldReturn(null);
     }
 
     function it_exposes_the_headers()

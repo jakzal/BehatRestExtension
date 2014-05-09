@@ -5,6 +5,7 @@ namespace spec\Behat\RestExtension\Context;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\RestExtension\Differ\Differ;
 use Behat\RestExtension\HttpClient\HttpClient;
+use Behat\RestExtension\Message\Request;
 use Behat\RestExtension\Message\RequestParser;
 use Behat\RestExtension\Message\Response;
 use PhpSpec\ObjectBehavior;
@@ -27,7 +28,7 @@ class RestContextSpec extends ObjectBehavior
 
     function it_forwards_requests_to_the_http_client(HttpClient $httpClient)
     {
-        $httpClient->get('http://localhost/events')->shouldBeCalled();
+        $httpClient->send(new Request('GET', 'http://localhost/events'))->shouldBeCalled();
 
         $this->theClientRequests('GET', '/events');
     }
@@ -42,7 +43,7 @@ class RestContextSpec extends ObjectBehavior
             }
         );
 
-        $httpClient->post('http://localhost/events', array(), '[]')->shouldBeCalled();
+        $httpClient->send(new Request('POST', 'http://localhost/events', '[]'))->shouldBeCalled();
 
         $this->theClientRequestsWith('POST', '/events', $body);
     }

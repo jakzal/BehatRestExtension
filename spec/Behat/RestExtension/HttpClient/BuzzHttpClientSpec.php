@@ -2,14 +2,16 @@
 
 namespace spec\Behat\RestExtension\HttpClient;
 
+use Behat\RestExtension\HttpClient\Exception\UnsupportedHttpMethodException;
+use Behat\RestExtension\Message\Request;
 use Buzz\Browser;
-use Buzz\Message\Response;
+use Buzz\Message\Response as BuzzResponse;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
 class BuzzHttpClientSpec extends ObjectBehavior
 {
-    function let(Browser $browser, Response $buzzResponse)
+    function let(Browser $browser, BuzzResponse $buzzResponse)
     {
         $this->beConstructedWith($browser);
 
@@ -23,66 +25,38 @@ class BuzzHttpClientSpec extends ObjectBehavior
         $this->shouldHaveType('Behat\RestExtension\HttpClient\HttpClient');
     }
 
-    function it_returns_a_response_on_get_request(Browser $browser, Response $buzzResponse)
+    function it_sends_a_request(Browser $browser, BuzzResponse $buzzResponse)
     {
         $browser->get('/events', array())->willReturn($buzzResponse);
 
-        $response = $this->get('/events');
+        $response = $this->send(new Request('GET', '/events'));
 
         $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
     }
 
-
-    function it_returns_a_response_on_head_request(Browser $browser, Response $buzzResponse)
+    function it_sends_a_request_with_body(Browser $browser, BuzzResponse $buzzResponse)
     {
-        $browser->head('/events', array())->willReturn($buzzResponse);
+        $browser->post('/events', array(), 'request body')->willReturn($buzzResponse);
 
-        $response = $this->head('/events');
+        $request = new Request('POST', '/events', 'request body');
+
+        $response = $this->send($request);
 
         $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
     }
 
-    function it_returns_a_response_on_post_request(Browser $browser, Response $buzzResponse)
+    function it_throws_an_exception_if_method_is_not_supported()
     {
-        $browser->post('/events', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
+        $request = new Request('FOO', 200);
 
-        $response = $this->post('/events', array('Accept' => 'application/json'), 'content');
-
-        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
+        $this->shouldThrow(new UnsupportedHttpMethodException('Unsupported or invalid http method: "FOO"'))->duringSend($request);
     }
 
-    function it_returns_a_response_on_put_request(Browser $browser, Response $buzzResponse)
-    {
-        $browser->put('/events/1', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
-
-        $response = $this->put('/events/1', array('Accept' => 'application/json'), 'content');
-
-        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
-    }
-
-    function it_returns_a_response_on_patch_request(Browser $browser, Response $buzzResponse)
-    {
-        $browser->patch('/events/1', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
-
-        $response = $this->patch('/events/1', array('Accept' => 'application/json'), 'content');
-
-        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
-    }
-
-    function it_returns_a_response_on_delete_request(Browser $browser, Response $buzzResponse)
-    {
-        $browser->delete('/events/1', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
-
-        $response = $this->delete('/events/1', array('Accept' => 'application/json'), 'content');
-
-        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
-    }
-
-    function it_makes_the_last_response_available(Browser $browser, Response $buzzResponse)
+    function it_makes_the_last_response_available(Browser $browser, BuzzResponse $buzzResponse)
     {
         $browser->get('/events', array())->willReturn($buzzResponse);
 
-        $response = $this->get('/events');
+        $response = $this->send(new Request('GET', '/events'));
 
         $this->getLastResponse()->shouldReturn($response);
     }

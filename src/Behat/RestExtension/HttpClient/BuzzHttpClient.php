@@ -2,6 +2,8 @@
 
 namespace Behat\RestExtension\HttpClient;
 
+use Behat\RestExtension\HttpClient\Exception\UnsupportedHttpMethodException;
+use Behat\RestExtension\Message\Request;
 use Buzz\Browser;
 use Buzz\Message\Response as BuzzResponse;
 use Behat\RestExtension\Message\Response;
@@ -27,83 +29,23 @@ class BuzzHttpClient implements HttpClient
     }
 
     /**
-     * @param string $resource
-     * @param array  $headers
+     * @param Request $request
      *
      * @return Response
      */
-    public function get($resource, array $headers = array())
+    public function send(Request $request)
     {
-        $buzzResponse = $this->browser->get($resource, $headers);
+        $method = strtolower($request->getMethod());
 
-        return $this->lastResponse = $this->createResponse($buzzResponse);
-    }
+        if (!method_exists($this->browser, $method)) {
+            throw new UnsupportedHttpMethodException(sprintf('Unsupported or invalid http method: "%s"', $request->getMethod()));
+        }
 
-    /**
-     * @param string $resource
-     * @param array  $headers
-     *
-     * @return Response
-     */
-    public function head($resource, array $headers = array())
-    {
-        $buzzResponse = $this->browser->head($resource, $headers);
-
-        return $this->lastResponse = $this->createResponse($buzzResponse);
-    }
-
-    /**
-     * @param string $resource
-     * @param array  $headers
-     * @param string $content
-     *
-     * @return Response
-     */
-    public function post($resource, array $headers = array(), $content = null)
-    {
-        $buzzResponse = $this->browser->post($resource, $headers, $content);
-
-        return $this->lastResponse = $this->createResponse($buzzResponse);
-    }
-
-    /**
-     * @param string $resource
-     * @param array  $headers
-     * @param string $content
-     *
-     * @return Response
-     */
-    public function put($resource, array $headers = array(), $content = null)
-    {
-        $buzzResponse = $this->browser->put($resource, $headers, $content);
-
-        return $this->lastResponse = $this->createResponse($buzzResponse);
-    }
-
-    /**
-     * @param string $resource
-     * @param array  $headers
-     * @param string $content
-     *
-     * @return Response
-     */
-    public function patch($resource, array $headers = array(), $content = null)
-    {
-        $buzzResponse = $this->browser->patch($resource, $headers, $content);
-
-        return $this->lastResponse = $this->createResponse($buzzResponse);
-    }
-
-    /**
-     * @param string $resource
-     * @param array  $headers
-     * @param string $content
-     *
-     * @return Response
-     */
-    public function delete($resource, array $headers = array(), $content = null)
-    {
-        $buzzResponse = $this->browser->delete($resource, $headers, $content);
+        if (in_array($method, array('get', 'head'))) {
+            $buzzResponse = $this->browser->$method($request->getResource(), $request->getHeaders());
+        } else {
+            $buzzResponse = $this->browser->$method($request->getResource(), $request->getHeaders(), $request->getBody());
+        }
 
         return $this->lastResponse = $this->createResponse($buzzResponse);
     }

@@ -51,7 +51,7 @@ class RestContext implements Context
      */
     public function theClientRequests($method, $resource)
     {
-        $this->send(new Request($method, $resource));
+        $this->send(new Request($method, $this->baseUrl.$resource));
     }
 
     /**
@@ -59,7 +59,7 @@ class RestContext implements Context
      */
     public function theClientRequestsWith($method, $resource, PyStringNode $content = null)
     {
-        $request = new Request($method, $resource);
+        $request = new Request($method, $this->baseUrl.$resource);
         $this->requestParser->parse((string) $content, $request);
 
         $this->send($request);
@@ -92,13 +92,6 @@ class RestContext implements Context
      */
     private function send(Request $request)
     {
-        $method = strtolower($request->getMethod());
-        $resource = $this->baseUrl . $request->getResource();
-
-        if (in_array($method, array('get', 'head'))) {
-            return $this->httpClient->$method($resource);
-        }
-
-        return $this->httpClient->$method($resource, $request->getHeaders(), $request->getBody());
+        return $this->httpClient->send($request);
     }
 }
