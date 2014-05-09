@@ -8,7 +8,6 @@ use Behat\RestExtension\Differ\Differ;
 use Behat\RestExtension\HttpClient\HttpClient;
 use Behat\RestExtension\Message\Request;
 use Behat\RestExtension\Message\RequestParser;
-use Behat\RestExtension\Message\Response;
 
 class RestContext implements Context
 {
