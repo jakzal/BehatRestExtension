@@ -7,6 +7,7 @@ default:
         - PhpServerContext
         - Behat\RestExtension\Context\RestContext:
             baseUrl: 'http://localhost:8000'
+        - Behat\RestExtension\Context\RestDebugContext
       filters:
         tags: "~@wip"
   extensions:

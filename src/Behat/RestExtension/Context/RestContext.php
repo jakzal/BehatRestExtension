@@ -56,7 +56,7 @@ class RestContext implements Context
     /**
      * @When /^(?:|the )client requests (?P<method>POST|PUT|OPTIONS) "(?P<resource>[^"]*)" with:$/
      */
-    public function theClientRequestsWith($method, $resource, PyStringNode $body = null)
+    public function theClientRequestsWith($method, $resource, PyStringNode $body)
     {
         $request = new Request($method, $this->baseUrl.$resource);
         $this->requestParser->parse((string) $body, $request);
