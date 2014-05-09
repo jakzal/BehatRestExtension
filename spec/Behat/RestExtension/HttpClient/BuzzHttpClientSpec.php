@@ -2,14 +2,15 @@
 
 namespace spec\Behat\RestExtension\HttpClient;
 
+require_once __DIR__.'/HttpClientBehavior.php';
+
 use Behat\RestExtension\HttpClient\Exception\UnsupportedHttpMethodException;
 use Behat\RestExtension\Message\Request;
 use Buzz\Browser;
 use Buzz\Message\Response as BuzzResponse;
-use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class BuzzHttpClientSpec extends ObjectBehavior
+class BuzzHttpClientSpec extends HttpClientBehavior
 {
     function let(Browser $browser, BuzzResponse $buzzResponse)
     {
@@ -59,27 +60,5 @@ class BuzzHttpClientSpec extends ObjectBehavior
         $response = $this->send(new Request('GET', '/events'));
 
         $this->getLastResponse()->shouldReturn($response);
-    }
-
-    public function getMatchers()
-    {
-        return array(
-            'beAResponse' => function ($body, $content, $statusCode, $headers) {
-                if (!$body instanceof \Behat\RestExtension\Message\Response) {
-                    return false;
-                }
-
-                if (!$body->getBody() === $content || !$body->getStatusCode() === $statusCode) {
-                    return false;
-                }
-
-                $headersMatch = true;
-                foreach ($headers as $name => $value) {
-                    $headersMatch = $headersMatch && $body->getHeader($name) === $value;
-                }
-
-                return $headersMatch;
-            }
-        );
     }
 }

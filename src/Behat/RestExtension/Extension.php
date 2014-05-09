@@ -129,7 +129,7 @@ class Extension implements BehatExtension
     {
         $httpClient = $config['http_client'];
         $httpClientName = key($httpClient);
-        $httpClientServiceId = 'behat.rest.http_client.' . $httpClientName;
+        $httpClientServiceId = 'behat.rest.http_client.'.$httpClientName;
 
         $this->httpClientExtensions[$httpClientName]->load($container, $httpClient[$httpClientName]);
 
