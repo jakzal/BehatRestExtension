@@ -47,6 +47,9 @@ class BuzzHttpClient implements HttpClient
      */
     public function head($resource, array $headers = array())
     {
+        $buzzResponse = $this->browser->head($resource, $headers);
+
+        return $this->lastResponse = $this->createResponse($buzzResponse);
     }
 
     /**
@@ -72,6 +75,9 @@ class BuzzHttpClient implements HttpClient
      */
     public function put($resource, array $headers = array(), $content = null)
     {
+        $buzzResponse = $this->browser->put($resource, $headers, $content);
+
+        return $this->lastResponse = $this->createResponse($buzzResponse);
     }
 
     /**
@@ -83,6 +89,9 @@ class BuzzHttpClient implements HttpClient
      */
     public function patch($resource, array $headers = array(), $content = null)
     {
+        $buzzResponse = $this->browser->patch($resource, $headers, $content);
+
+        return $this->lastResponse = $this->createResponse($buzzResponse);
     }
 
     /**
@@ -94,6 +103,9 @@ class BuzzHttpClient implements HttpClient
      */
     public function delete($resource, array $headers = array(), $content = null)
     {
+        $buzzResponse = $this->browser->delete($resource, $headers, $content);
+
+        return $this->lastResponse = $this->createResponse($buzzResponse);
     }
 
     /**

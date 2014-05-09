@@ -32,11 +32,48 @@ class BuzzHttpClientSpec extends ObjectBehavior
         $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
     }
 
+
+    function it_returns_a_response_on_head_request(Browser $browser, Response $buzzResponse)
+    {
+        $browser->head('/events', array())->willReturn($buzzResponse);
+
+        $response = $this->head('/events');
+
+        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
+    }
+
     function it_returns_a_response_on_post_request(Browser $browser, Response $buzzResponse)
     {
         $browser->post('/events', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
 
         $response = $this->post('/events', array('Accept' => 'application/json'), 'content');
+
+        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
+    }
+
+    function it_returns_a_response_on_put_request(Browser $browser, Response $buzzResponse)
+    {
+        $browser->put('/events/1', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
+
+        $response = $this->put('/events/1', array('Accept' => 'application/json'), 'content');
+
+        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
+    }
+
+    function it_returns_a_response_on_patch_request(Browser $browser, Response $buzzResponse)
+    {
+        $browser->patch('/events/1', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
+
+        $response = $this->patch('/events/1', array('Accept' => 'application/json'), 'content');
+
+        $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
+    }
+
+    function it_returns_a_response_on_delete_request(Browser $browser, Response $buzzResponse)
+    {
+        $browser->delete('/events/1', array('Accept' => 'application/json'), 'content')->willReturn($buzzResponse);
+
+        $response = $this->delete('/events/1', array('Accept' => 'application/json'), 'content');
 
         $response->shouldBeAResponse('Body', 200, array('Content-Type' => 'application/json'));
     }
