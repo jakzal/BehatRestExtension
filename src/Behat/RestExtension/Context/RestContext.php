@@ -79,7 +79,7 @@ class RestContext implements Context
             throw new \LogicException(sprintf('Expected %d status code but %d received', $statusCode, $response->getStatusCode()));
         }
 
-        if ($diff = $this->differ->diff($response->getBody(), $body)) {
+        if ($diff = $this->differ->diff($response->getBody(), (string) $body)) {
             throw new \LogicException($diff);
         }
     }
