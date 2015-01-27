@@ -11,8 +11,8 @@
 
         <service id="behat.rest.differ.coduo.matcher.factory" class="Coduo\PHPMatcher\Factory\SimpleFactory" />
 
-        <service id="behat.rest.differ.coduo.matcher" class="Coduo\PHPMatcher\Matcher"
-                 factory-service="behat.rest.differ.coduo.matcher.factory" factory-method="createMatcher">
+        <service id="behat.rest.differ.coduo.matcher" class="Coduo\PHPMatcher\Matcher">
+            <factory service="behat.rest.differ.coduo.matcher.factory" method="createMatcher"/>
         </service>
     </services>
 </container>
