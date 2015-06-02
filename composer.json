@@ -1,0 +1,30 @@
+{
+    "name": "zalas/rest-extension",
+    "type": "behat-extension",
+    "description": "Rest extension for Behat",
+    "keywords": ["rest", "test"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jakub Zalas",
+            "email": "jakub@zalas.pl"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "behat/behat": "~3.0"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.0",
+        "guzzle/guzzle": "~3.8",
+        "kriswallsmith/buzz": "~0.10",
+        "symfony/process": "~2.3"
+    },
+    "suggest": {
+        "guzzle/guzzle": "for guzzle integration",
+        "kriswallsmith/buzz": "for buzz integration"
+    },
+    "autoload": {
+        "psr-4": { "Zalas\\RestExtension\\": "src/Zalas/RestExtension" }
+    }
+}
