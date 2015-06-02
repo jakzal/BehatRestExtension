@@ -1,0 +1,9 @@
+default:
+    gherkin:
+        filters:
+            tags: "~@wip"
+    suites:
+        search:
+            contexts: [ BehatRunnerContext ]
+    formatters:
+        pretty: ~
