@@ -1,4 +1,3 @@
-@wip
 Feature: Using the http client
   As a Developer
   I need an access to an http client
