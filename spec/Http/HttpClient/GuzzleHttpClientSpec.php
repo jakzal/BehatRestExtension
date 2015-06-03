@@ -38,7 +38,7 @@ class GuzzleHttpClientSpec extends ObjectBehavior
         $this->send($request)->shouldReturn($response);
     }
 
-    function it_rethrows_the_request_exception_if_response_is_not_present(Guzzle $guzzle, RequestInterface $request, ResponseInterface $response)
+    function it_rethrows_the_request_exception_if_response_is_not_present(Guzzle $guzzle, RequestInterface $request)
     {
         $exception = new RequestException('Request failed', $request->getWrappedObject());
 
