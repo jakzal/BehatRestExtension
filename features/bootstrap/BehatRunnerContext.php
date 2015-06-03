@@ -85,7 +85,7 @@ class BehatRunnerContext implements Context
     public function itShouldPass()
     {
         try {
-            PHPUnit::assertSame(0, $this->process->getExitCode());
+            PHPUnit::assertSame(0, $this->process->getExitCode(), 'Command terminated with an error');
         } catch (\Exception $e) {
             echo $this->getOutput();
 
@@ -99,7 +99,7 @@ class BehatRunnerContext implements Context
     public function itShouldFail()
     {
         try {
-            PHPUnit::assertNotSame(0, $this->process->getExitCode());
+            PHPUnit::assertNotSame(0, $this->process->getExitCode(), 'Command succeeded');
         } catch (\Exception $e) {
             echo $this->getOutput();
 

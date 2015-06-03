@@ -19,10 +19,10 @@ Feature: Using the http client
     <?php
 
     use Behat\Behat\Context\Context;
+    use GuzzleHttp\Psr7\Request;
     use PHPUnit_Framework_Assert as PHPUnit;
     use Psr\Http\Message\ResponseInterface;
     use Zalas\Behat\RestExtension\Http\HttpClient;
-    use Zend\Diactoros\Request;
 
     class PostcodeSearchContext implements Context
     {
@@ -40,7 +40,7 @@ Feature: Using the http client
         {
             $uri = sprintf('http://api.postcodes.io/postcodes/%s', $postcode);
 
-            $this->lastResponse = $this->httpClient->send(new Request($uri, 'GET'));
+            $this->lastResponse = $this->httpClient->send(new Request('GET', $uri));
         }
 
         /**
@@ -48,16 +48,16 @@ Feature: Using the http client
          */
         public function iShouldSeeItsLocation()
         {
-            \PHPUnit::assertInstanceOf(ResponseInterface::class, $this->lastResponse);
-            \PHPUnit::assertSame(200, $this->lastResponse->getStatusCode(), 'Got a successful response');
+            PHPUnit::assertInstanceOf(ResponseInterface::class, $this->lastResponse);
+            PHPUnit::assertSame(200, $this->lastResponse->getStatusCode(), 'Got a successful response');
 
-            $json = json_decode($this->lastResponse->getBody());
-            \PHPUnit::assertInternalType('array', $json, 'Response contains a query result');
-            \PHPUnit::arrayHasKey('result', $json, 'Result found in the response');
-            \PHPUnit::assertArrayHasKey('latitude', $json['result'], 'Latitude found in the response');
-            \PHPUnit::assertArrayHasKey('longitude', $json['result'], 'Longitude found in the response');
-            \PHPUnit::assertInternalType('double', $json['result']['latitude'], 'Latitude is a double');
-            \PHPUnit::assertInternalType('double', $json['result']['longitude'], 'Longitude is a double');
+            $json = json_decode($this->lastResponse->getBody(), true);
+            PHPUnit::assertInternalType('array', $json, 'Response contains a query result');
+            PHPUnit::arrayHasKey('result', $json, 'Result found in the response');
+            PHPUnit::assertArrayHasKey('latitude', $json['result'], 'Latitude found in the response');
+            PHPUnit::assertArrayHasKey('longitude', $json['result'], 'Longitude found in the response');
+            PHPUnit::assertInternalType('double', $json['result']['latitude'], 'Latitude is a double');
+            PHPUnit::assertInternalType('double', $json['result']['longitude'], 'Longitude is a double');
         }
 
         /**

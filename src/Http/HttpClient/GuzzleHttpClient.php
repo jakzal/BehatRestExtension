@@ -2,7 +2,8 @@
 
 namespace Zalas\Behat\RestExtension\Http\HttpClient;
 
-use Guzzle\Http\ClientInterface as Guzzle;
+use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Zalas\Behat\RestExtension\Http\HttpClient;
@@ -29,6 +30,14 @@ class GuzzleHttpClient implements HttpClient
      */
     public function send(RequestInterface $request)
     {
-        return $this->guzzle->send($request);
+        try {
+            return $this->guzzle->send($request);
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                return $e->getResponse();
+            }
+
+            throw $e;
+        }
     }
 }

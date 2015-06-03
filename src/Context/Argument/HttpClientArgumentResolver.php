@@ -6,7 +6,6 @@ use Behat\Behat\Context\Argument\ArgumentResolver;
 use ReflectionClass;
 use ReflectionMethod;
 use Zalas\Behat\RestExtension\Http\HttpClient;
-use Zend\Diactoros\Request;
 
 class HttpClientArgumentResolver implements ArgumentResolver
 {
