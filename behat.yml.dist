@@ -4,6 +4,6 @@ default:
             tags: "~@wip"
     suites:
         search:
-            contexts: [ BehatRunnerContext ]
+            contexts: [ PhpServerContext, BehatRunnerContext ]
     formatters:
         pretty: ~

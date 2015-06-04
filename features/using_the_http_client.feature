@@ -37,7 +37,7 @@ Feature: Using the http client
          */
         public function iSearchFor($postcode)
         {
-            $uri = sprintf('http://api.postcodes.io/postcodes/%s', $postcode);
+            $uri = sprintf('http://localhost:8000/postcodes/%s', $postcode);
 
             $this->lastResponse = $this->httpClient->send(new Request('GET', $uri));
         }
