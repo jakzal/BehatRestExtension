@@ -1,5 +1,5 @@
 {
-    "name": "zalas/rest-extension",
+    "name": "zalas/behat-rest-extension",
     "type": "behat-extension",
     "description": "Rest extension for Behat",
     "keywords": ["rest", "test"],
