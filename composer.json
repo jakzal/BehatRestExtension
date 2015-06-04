@@ -20,7 +20,8 @@
         "phpunit/phpunit": "~4.6",
         "guzzlehttp/guzzle": "~6.0",
         "kriswallsmith/buzz": "~0.10",
-        "symfony/process": "~2.3"
+        "symfony/process": "~2.3",
+        "symfony/filesystem": "~2.3"
     },
     "suggest": {
         "guzzle/guzzle": "for guzzle integration",
