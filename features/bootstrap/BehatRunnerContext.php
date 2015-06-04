@@ -68,11 +68,10 @@ class BehatRunnerContext implements Context
         $this->process->setWorkingDirectory($this->workingDir);
         $this->process->setCommandLine(
             sprintf(
-                '%s %s %s %s',
+                '%s %s %s',
                 $this->phpBin,
                 escapeshellarg(BEHAT_BIN_PATH),
-                strtr('--format-settings=\'{"timer": false}\'', array('\'' => '"', '"' => '\"')),
-                '--format=progress'
+                strtr('--format-settings=\'{"timer": false}\'', array('\'' => '"', '"' => '\"'))
             )
         );
         $this->process->start();
@@ -114,7 +113,9 @@ class BehatRunnerContext implements Context
     {
         $this->itShouldPass();
 
-        PHPUnit::assertRegExp('/'.preg_quote($expectedOutput, '/').'/sm', $this->getOutput());
+        foreach ($expectedOutput->getStrings() as $expectedLine) {
+            PHPUnit::assertRegExp('/'.preg_quote($expectedLine, '/').'/sm', $this->getOutput());
+        }
     }
 
     /**
@@ -124,7 +125,9 @@ class BehatRunnerContext implements Context
     {
         $this->itShouldFail();
 
-        PHPUnit::assertRegExp('/'.preg_quote($expectedOutput, '/').'/sm', $this->getOutput());
+        foreach ($expectedOutput->getStrings() as $expectedLine) {
+            PHPUnit::assertRegExp('/'.preg_quote($expectedLine, '/').'/sm', $this->getOutput());
+        }
     }
 
     /**
