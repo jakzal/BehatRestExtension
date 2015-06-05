@@ -11,20 +11,23 @@
         }
     ],
     "require": {
-        "php": ">=5.4",
-        "behat/behat": "~3.0"
+        "php": ">=5.5",
+        "behat/behat": "~3.0",
+        "psr/http-message": "~1.0"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0",
-        "guzzle/guzzle": "~3.8",
+        "phpunit/phpunit": "~4.6",
+        "guzzlehttp/guzzle": "~6.0",
         "kriswallsmith/buzz": "~0.10",
-        "symfony/process": "~2.3"
+        "symfony/process": "~2.3",
+        "symfony/filesystem": "~2.3"
     },
     "suggest": {
         "guzzle/guzzle": "for guzzle integration",
         "kriswallsmith/buzz": "for buzz integration"
     },
     "autoload": {
-        "psr-4": { "Zalas\\RestExtension\\": "src/Zalas/RestExtension" }
+        "psr-4": { "Zalas\\Behat\\RestExtension\\": "src/" }
     }
 }
