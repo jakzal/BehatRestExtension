@@ -41,6 +41,9 @@ class RestExtension implements Extension
      */
     public function configure(ArrayNodeDefinition $builder)
     {
+        $builder->children()
+            ->arrayNode('guzzle')
+            ->prototype('variable');
     }
 
     /**
@@ -48,7 +51,7 @@ class RestExtension implements Extension
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $guzzleDefinition = new Definition(Guzzle::class);
+        $guzzleDefinition = new Definition(Guzzle::class, [$config['guzzle']]);
         $httpClientDefinition = new Definition(GuzzleHttpClient::class, [$guzzleDefinition]);
         $container->setDefinition('rest.http_client', $httpClientDefinition);
 
