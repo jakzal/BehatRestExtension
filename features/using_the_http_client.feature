@@ -151,3 +151,17 @@ Feature: Using the http client
     """
     When I run behat
     Then it should pass
+
+  @wip
+  Scenario: Changing the client driver
+    Given a behat configuration:
+    """
+    default:
+      extensions:
+        Zalas\Behat\RestExtension:
+          buzz: ~
+    """
+    And a feature using an http client
+    When I run behat
+    Then it should pass
+    And the "buzz" http client should have been used
