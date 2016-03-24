@@ -7,7 +7,7 @@ set -o pipefail
 COMMAND="$1"
 
 ALIASES=(
-    "phpspec:vendor/bin/phpspec run"
+    "phpunit:vendor/bin/phpunit"
     "behat:vendor/bin/behat"
 )
 
