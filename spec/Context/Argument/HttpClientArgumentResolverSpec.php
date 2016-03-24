@@ -3,12 +3,12 @@
 namespace spec\Zalas\Behat\RestExtension\Context\Argument;
 
 use Behat\Behat\Context\Argument\ArgumentResolver;
+use Http\Client\HttpClient;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
-use Zalas\Behat\RestExtension\Http\HttpClient;
 
 class HttpClientArgumentResolverSpec extends ObjectBehavior
 {

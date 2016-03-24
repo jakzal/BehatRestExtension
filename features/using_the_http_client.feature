@@ -21,7 +21,7 @@ Feature: Using the http client
     use GuzzleHttp\Psr7\Request;
     use PHPUnit_Framework_Assert as PHPUnit;
     use Psr\Http\Message\ResponseInterface;
-    use Zalas\Behat\RestExtension\Http\HttpClient;
+    use Http\Client\HttpClient;
 
     class PostcodeSearchContext implements Context
     {
@@ -39,7 +39,7 @@ Feature: Using the http client
         {
             $uri = sprintf('http://localhost:8000/postcodes/%s', $postcode);
 
-            $this->lastResponse = $this->httpClient->send(new Request('GET', $uri));
+            $this->lastResponse = $this->httpClient->sendRequest(new Request('GET', $uri));
         }
 
         /**
@@ -96,7 +96,8 @@ Feature: Using the http client
       extensions:
         Zalas\Behat\RestExtension:
           guzzle:
-            base_uri: http://localhost:8000/
+            config:
+              base_uri: http://localhost:8000/
     """
     And the context file "features/bootstrap/PostcodeSearchContext.php" contains:
     """
@@ -106,7 +107,7 @@ Feature: Using the http client
     use GuzzleHttp\Psr7\Request;
     use PHPUnit_Framework_Assert as PHPUnit;
     use Psr\Http\Message\ResponseInterface;
-    use Zalas\Behat\RestExtension\Http\HttpClient;
+    use Http\Client\HttpClient;
 
     class PostcodeSearchContext implements Context
     {
@@ -124,7 +125,7 @@ Feature: Using the http client
         {
             $uri = sprintf('/postcodes/%s', $postcode);
 
-            $this->lastResponse = $this->httpClient->send(new Request('GET', $uri));
+            $this->lastResponse = $this->httpClient->sendRequest(new Request('GET', $uri));
         }
 
         /**

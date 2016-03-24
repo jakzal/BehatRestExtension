@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+COMMAND="$1"
+
+ALIASES=(
+    "phpunit:vendor/bin/phpunit"
+    "behat:vendor/bin/behat"
+)
+
+for alias in "${ALIASES[@]}" ; do
+    KEY=${alias%%:*}
+    VALUE=${alias#*:}
+    if [[ "$COMMAND" == "$KEY" ]]; then
+        COMMAND="$VALUE"
+    fi
+done
+
+docker-compose run --rm rest-extension $COMMAND "${@:2}"

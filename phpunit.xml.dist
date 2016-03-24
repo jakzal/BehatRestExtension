@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./vendor/autoload.php" colors="true">
+    <testsuites>
+        <testsuite name="unit">
+            <directory>tests</directory>
+            <groups>
+                <exclude>
+                    <group>integration</group>
+                </exclude>
+            </groups>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>tests</directory>
+            <groups>
+                <include>
+                    <group>integration</group>
+                </include>
+            </groups>
+        </testsuite>
+    </testsuites>
+    <php>
+        <ini name="error_reporting" value="-1" />
+    </php>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+</phpunit>

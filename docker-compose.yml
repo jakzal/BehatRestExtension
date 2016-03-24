@@ -1,0 +1,8 @@
+rest-extension:
+  build: .
+  volumes:
+    - .:/rest-extension
+    - ~/.composer/cache:/root/.composer/cache
+  working_dir: /rest-extension
+  container_name: rest-extension
+

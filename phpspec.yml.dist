@@ -1,4 +1,0 @@
-suites:
-    default:
-        namespace: Zalas\Behat\RestExtension
-        psr4_prefix: Zalas\Behat\RestExtension
