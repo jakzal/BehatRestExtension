@@ -58,6 +58,8 @@ class BehatRunnerContext implements Context
     {
         try {
             PHPUnit::assertSame(0, $this->behatRunner->getExitCode(), 'Command terminated with an error');
+            PHPUnit::assertStringNotMatchesFormat('PHP Warning:', $this->behatRunner->getFullOutput());
+            PHPUnit::assertStringNotMatchesFormat('PHP Notice:', $this->behatRunner->getFullOutput());
         } catch (\Exception $e) {
             echo $this->behatRunner->getFullOutput();
 
