@@ -9,11 +9,25 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Zalas\Behat\RestExtension\Context\Argument\HttpClientArgumentResolver;
-use Zalas\Behat\RestExtension\HttpClient\DiscoveryHttpClientFactory;
-use Zalas\Behat\RestExtension\HttpClient\GuzzleHttpClientFactory;
+use Zalas\Behat\RestExtension\ServiceContainer\Adapter\AdapterFactory;
+use Zalas\Behat\RestExtension\ServiceContainer\Adapter\DiscoveryFactory;
+use Zalas\Behat\RestExtension\ServiceContainer\Adapter\GuzzleFactory;
 
 class RestExtension implements Extension
 {
+    /**
+     * @var AdapterFactory[]
+     */
+    private $factories;
+
+    public function __construct()
+    {
+        $this->factories = [
+            new GuzzleFactory(),
+            new DiscoveryFactory(),
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -41,7 +55,9 @@ class RestExtension implements Extension
      */
     public function configure(ArrayNodeDefinition $builder)
     {
-        $this->configureGuzzle($builder);
+        foreach ($this->factories as $factory) {
+            $factory->configure($builder);
+        }
     }
 
     /**
@@ -49,49 +65,26 @@ class RestExtension implements Extension
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $options = is_array($config['guzzle']['config']) ? $config['guzzle']['config'] : [];
+        $this->loadFactory($container, $config);
+        $this->addArgumentResolver($container);
 
-        $this->addDiscoveryFactory($container);
-        $this->addGuzzleFactory($container, $config);
-        $this->addArgumentResolver($container, $options);
-    }
-
-    /**
-     * @param ArrayNodeDefinition $builder
-     */
-    private function configureGuzzle(ArrayNodeDefinition $builder)
-    {
-        $guzzle = $builder->children()
-            ->arrayNode('guzzle')
-            ->canBeEnabled();
-
-        $guzzle->children()
-            ->arrayNode('config')
-            ->prototype('variable');
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     */
-    private function addDiscoveryFactory(ContainerBuilder $container)
-    {
-        $discoveryFactoryDefinition = new Definition(DiscoveryHttpClientFactory::class);
-        $discoveryFactoryDefinition->setPublic(false);
-        $container->setDefinition('rest.http_client_factory.discovery', $discoveryFactoryDefinition);
-        $container->setAlias('rest.http_client_factory', 'rest.http_client_factory.discovery');
+        if (!$container->hasDefinition('rest.http_client_factory')) {
+            throw new \RuntimeException('No http client adapter is configured. To enable the auto discovery of http clients install the "php-http/discovery" and the "puli/composer-plugin" packages.');
+        }
     }
 
     /**
      * @param ContainerBuilder $container
      * @param array            $config
      */
-    private function addGuzzleFactory(ContainerBuilder $container, array $config)
+    private function loadFactory(ContainerBuilder $container, array $config)
     {
-        if (true === $config['guzzle']['enabled']) {
-            $guzzleFactoryDefinition = new Definition(GuzzleHttpClientFactory::class);
-            $guzzleFactoryDefinition->setPublic(false);
-            $container->setDefinition('rest.http_client_factory.guzzle6', $guzzleFactoryDefinition);
-            $container->setAlias('rest.http_client_factory', 'rest.http_client_factory.guzzle6');
+        foreach ($this->factories as $factory) {
+            if ($factory->isEnabled($config)) {
+                $container->setDefinition('rest.http_client_factory', $factory->buildAdapter($config));
+
+                return;
+            }
         }
     }
 
@@ -99,13 +92,10 @@ class RestExtension implements Extension
      * @param ContainerBuilder $container
      * @param                  $options
      */
-    private function addArgumentResolver(ContainerBuilder $container, $options)
+    private function addArgumentResolver(ContainerBuilder $container)
     {
-        $argumentResolverDefinition = new Definition(
-            HttpClientArgumentResolver::class,
-            [new Reference('rest.http_client_factory'), $options]
-        );
-        $argumentResolverDefinition->addTag('context.argument_resolver');
-        $container->setDefinition('rest.argument_resolver.http_client', $argumentResolverDefinition);
+        $definition = new Definition(HttpClientArgumentResolver::class, [new Reference('rest.http_client_factory')]);
+        $definition->addTag('context.argument_resolver');
+        $container->setDefinition('rest.argument_resolver.http_client', $definition);
     }
 }

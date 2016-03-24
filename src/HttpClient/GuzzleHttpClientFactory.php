@@ -2,23 +2,30 @@
 
 namespace Zalas\Behat\RestExtension\HttpClient;
 
-use Http\Client\HttpClient;
 use GuzzleHttp\Client;
 use Http\Adapter\Guzzle6\Client as Adapter;
+use Http\Client\HttpClient;
 
 final class GuzzleHttpClientFactory implements HttpClientFactory
 {
     /**
+     * @var array
+     */
+    private $config;
+
+    /**
      * @param array $config
-     *
+     */
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * @return HttpClient
      */
-    public function createClient(array $config = [])
+    public function createClient()
     {
-        if (!class_exists(Adapter::class)) {
-            throw new \RuntimeException('To use the Guzzle http client you need to install the "php-http/guzzle6-adapter" package.');
-        }
-
-        return new Adapter(new Client($config));
+        return new Adapter(new Client($this->config));
     }
 }

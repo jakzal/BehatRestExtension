@@ -14,18 +14,11 @@ class HttpClientArgumentResolver extends ArgumentResolver
     private $factory;
 
     /**
-     * @var array
-     */
-    private $options;
-
-    /**
      * @param HttpClientFactory $factory
-     * @param array             $options
      */
-    public function __construct(HttpClientFactory $factory, array $options = [])
+    public function __construct(HttpClientFactory $factory)
     {
         $this->factory = $factory;
-        $this->options = $options;
     }
 
     /**
@@ -43,6 +36,6 @@ class HttpClientArgumentResolver extends ArgumentResolver
      */
     protected function resolveArgument()
     {
-        return $this->factory->createClient($this->options);
+        return $this->factory->createClient();
     }
 }

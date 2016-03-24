@@ -12,6 +12,6 @@ class GuzzleHttpClientFactoryTest extends HttpClientTestCase
      */
     protected function createHttpClientFactory()
     {
-        return new GuzzleHttpClientFactory();
+        return new GuzzleHttpClientFactory(['base_url' => 'http://localhost']);
     }
 }

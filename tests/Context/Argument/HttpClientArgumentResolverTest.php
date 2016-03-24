@@ -22,15 +22,10 @@ class HttpClientArgumentResolverTest extends \PHPUnit_Framework_TestCase
      */
     private $factory;
 
-    /**
-     * @var array
-     */
-    private $options = ['base_url' => 'http://localhost'];
-
     protected function setUp()
     {
         $this->factory = $this->prophesize(HttpClientFactory::class);
-        $this->argumentResolver = new HttpClientArgumentResolver($this->factory->reveal(), $this->options);
+        $this->argumentResolver = new HttpClientArgumentResolver($this->factory->reveal());
     }
 
     public function test_it_is_an_argument_resolver()
@@ -61,7 +56,7 @@ class HttpClientArgumentResolverTest extends \PHPUnit_Framework_TestCase
     public function test_it_adds_the_http_client_argument()
     {
         $httpClient = $this->prophesize(HttpClient::class)->reveal();
-        $this->factory->createClient($this->options)->willReturn($httpClient);
+        $this->factory->createClient()->willReturn($httpClient);
         $class = new \ReflectionClass(ClassWithHttpClientArgument::class);
 
         $resolved = $this->argumentResolver->resolveArguments($class, []);

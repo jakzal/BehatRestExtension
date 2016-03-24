@@ -34,6 +34,6 @@ abstract class HttpClientTestCase extends \PHPUnit_Framework_TestCase
 
     public function test_it_creates_an_http_client()
     {
-        $this->assertInstanceOf(HttpClient::class, $this->httpClientFactory->createClient([]));
+        $this->assertInstanceOf(HttpClient::class, $this->httpClientFactory->createClient());
     }
 }
