@@ -53,7 +53,7 @@ class HttpClientArgumentResolver implements ArgumentResolver
         $constructorParameters = $constructor->getParameters();
 
         foreach ($constructorParameters as $position => $parameter) {
-            if ($parameter->getClass() && HttpClient::class === $parameter->getClass()->getName()) {
+            if ($parameter->getClass() && HttpClient::class === $parameter->getClass()->name) {
                 $arguments[$position] = $this->factory->createClient($this->options);
             }
         }
