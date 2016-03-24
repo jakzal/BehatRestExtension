@@ -24,6 +24,11 @@
         "php-http/discovery": "^0.8.0",
         "puli/composer-plugin": "^1.0.0-beta9"
     },
+    "suggest": {
+        "php-http/guzzle6-adapter": "For Guzzle6 support",
+        "php-http/discovery": "For http client auto discovery",
+        "puli/composer-plugin": "For http client auto discovery"
+    },
     "autoload": {
         "psr-4": { "Zalas\\Behat\\RestExtension\\": "src/" }
     },
