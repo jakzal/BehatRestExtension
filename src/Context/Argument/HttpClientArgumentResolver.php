@@ -2,13 +2,11 @@
 
 namespace Zalas\Behat\RestExtension\Context\Argument;
 
-use Behat\Behat\Context\Argument\ArgumentResolver;
 use Http\Client\HttpClient;
 use ReflectionClass;
-use ReflectionMethod;
 use Zalas\Behat\RestExtension\HttpClient\HttpClientFactory;
 
-class HttpClientArgumentResolver implements ArgumentResolver
+class HttpClientArgumentResolver extends ArgumentResolver
 {
     /**
      * @var HttpClientFactory
@@ -31,33 +29,20 @@ class HttpClientArgumentResolver implements ArgumentResolver
     }
 
     /**
-     * {@inheritdoc}
+     * @param ReflectionClass $class
+     *
+     * @return bool
      */
-    public function resolveArguments(ReflectionClass $classReflection, array $arguments)
+    protected function matches(ReflectionClass $class)
     {
-        if ($constructor = $classReflection->getConstructor()) {
-            return $this->resolveConstructorArguments($constructor, $arguments);
-        }
-
-        return $arguments;
+        return HttpClient::class === $class->name;
     }
 
     /**
-     * @param ReflectionMethod $constructor
-     * @param array            $arguments
-     *
-     * @return array
+     * @return HttpClient
      */
-    private function resolveConstructorArguments(ReflectionMethod $constructor, array $arguments)
+    protected function resolveArgument()
     {
-        $constructorParameters = $constructor->getParameters();
-
-        foreach ($constructorParameters as $position => $parameter) {
-            if ($parameter->getClass() && HttpClient::class === $parameter->getClass()->name) {
-                $arguments[$position] = $this->factory->createClient($this->options);
-            }
-        }
-
-        return $arguments;
+        return $this->factory->createClient($this->options);
     }
 }
