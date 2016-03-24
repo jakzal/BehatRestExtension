@@ -15,6 +15,8 @@ use Zalas\Behat\RestExtension\ServiceContainer\Adapter\GuzzleFactory;
 
 class RestExtension implements Extension
 {
+    const CONFIG_KEY = 'rest';
+
     /**
      * @var AdapterFactory[]
      */
@@ -40,7 +42,7 @@ class RestExtension implements Extension
      */
     public function getConfigKey()
     {
-        return 'rest';
+        return self::CONFIG_KEY;
     }
 
     /**
