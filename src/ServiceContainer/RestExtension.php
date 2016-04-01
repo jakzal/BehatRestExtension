@@ -8,6 +8,7 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\ArgumentResolverPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\DiscoveryPlugin;
+use Zalas\Behat\RestExtension\ServiceContainer\Plugin\GuzzleMessageFactoryPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\GuzzlePlugin;
 
 class RestExtension implements Extension
@@ -23,6 +24,7 @@ class RestExtension implements Extension
     {
         $this->plugins = [
             new GuzzlePlugin(),
+            new GuzzleMessageFactoryPlugin(),
             new DiscoveryPlugin(),
             new ArgumentResolverPlugin(),
         ];
@@ -69,6 +71,15 @@ class RestExtension implements Extension
             $plugin->load($container, $config);
         }
 
+        $this->aliasHttpClientFactory($container);
+        $this->aliasMessageFactory($container);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function aliasHttpClientFactory(ContainerBuilder $container)
+    {
         $services = $container->findTaggedServiceIds('rest.http_client_factory');
 
         if (0 === count($services)) {
@@ -76,5 +87,19 @@ class RestExtension implements Extension
         }
 
         $container->setAlias('rest.http_client_factory', key($services));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function aliasMessageFactory(ContainerBuilder $container)
+    {
+        $services = $container->findTaggedServiceIds('rest.message_factory');
+
+        if (0 === count($services)) {
+            throw new \RuntimeException('No message factory is configured. Install one of "guzzlehttp/psr7" or "zendframework/zend-diactoros".');
+        }
+
+        $container->setAlias('rest.message_factory', key($services));
     }
 }

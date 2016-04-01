@@ -4,6 +4,7 @@ namespace Zalas\Behat\RestExtension\ServiceContainer;
 
 use Behat\Testwork\ServiceContainer\Configuration\ConfigurationTree;
 use Behat\Testwork\ServiceContainer\Extension;
+use Http\Message\MessageFactory;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Zalas\Behat\RestExtension\Context\Argument\HttpClientArgumentResolver;
@@ -61,6 +62,16 @@ class RestExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($container->has('rest.argument_resolver.http_client'));
         $this->assertInstanceOf(HttpClientArgumentResolver::class, $container->get('rest.argument_resolver.http_client'));
+    }
+
+    public function test_it_loads_the_message_factory()
+    {
+        $container = new ContainerBuilder();
+
+        $this->extension->load($container, $this->processConfiguration([]));
+
+        $this->assertTrue($container->has('rest.message_factory'));
+        $this->assertInstanceOf(MessageFactory::class, $container->get('rest.message_factory'));
     }
 
     private function assertHttpClientRegistered(ContainerBuilder $container, $class)
