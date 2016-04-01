@@ -2,7 +2,6 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
-use Behat\Behat\Tester\Exception\PendingException;
 
 class RestExtensionContext implements Context
 {
@@ -32,6 +31,18 @@ class RestExtensionContext implements Context
      */
     public function theHttpClientShouldBeUsed($client)
     {
-        throw new PendingException();
+        $output = $this->behatRunnerContext->getFullOutput();
+
+        if (!preg_match('#\[DEBUG\]\[HTTP CLIENT\] (\w+)#', $output, $matches)) {
+            throw new \LogicException('Could not determine which http client was used during the scenario.');
+        }
+
+        if ($matches[1] !== $client) {
+            throw new \LogicException(sprintf(
+                'The "%s" http client was used instead of the expected "%s" to run the scenario.',
+                $matches[1],
+                $client
+            ));
+        }
     }
 }

@@ -7,6 +7,7 @@ use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\ArgumentResolverPlugin;
+use Zalas\Behat\RestExtension\ServiceContainer\Plugin\BuzzPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\DiscoveryPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\GuzzleMessageFactoryPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\GuzzlePlugin;
@@ -25,6 +26,7 @@ class RestExtension implements Extension
         $this->plugins = [
             new GuzzlePlugin(),
             new GuzzleMessageFactoryPlugin(),
+            new BuzzPlugin(),
             new DiscoveryPlugin(),
             new ArgumentResolverPlugin(),
         ];

@@ -31,5 +31,8 @@ final class DiscoveryPlugin implements Plugin
      */
     public function configure(ArrayNodeDefinition $builder)
     {
+        $builder->children()
+            ->arrayNode('discovery')
+            ->canBeDisabled();
     }
 }

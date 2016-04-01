@@ -112,4 +112,12 @@ class BehatRunnerContext implements Context
     {
         $this->behatRunner->addDirectory($path);
     }
+
+    /**
+     * @return string
+     */
+    public function getFullOutput()
+    {
+        return $this->behatRunner->getFullOutput();
+    }
 }

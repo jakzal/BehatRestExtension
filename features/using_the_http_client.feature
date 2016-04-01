@@ -152,7 +152,6 @@ Feature: Using the http client
     When I run behat
     Then it should pass
 
-  @wip
   Scenario: Changing the http client adapter
     Given a behat configuration:
     """

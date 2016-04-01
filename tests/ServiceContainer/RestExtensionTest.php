@@ -8,6 +8,7 @@ use Http\Message\MessageFactory;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Zalas\Behat\RestExtension\Context\Argument\HttpClientArgumentResolver;
+use Zalas\Behat\RestExtension\HttpClient\BuzzHttpClientFactory;
 use Zalas\Behat\RestExtension\HttpClient\DiscoveryHttpClientFactory;
 use Zalas\Behat\RestExtension\HttpClient\GuzzleHttpClientFactory;
 
@@ -40,7 +41,7 @@ class RestExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $container = new ContainerBuilder();
 
-        $this->extension->load($container, $this->processConfiguration(['guzzle' => true]));
+        $this->extension->load($container, $this->processConfiguration(['guzzle' => true, 'discovery' => false]));
 
         $this->assertHttpClientRegistered($container, GuzzleHttpClientFactory::class);
     }
@@ -52,6 +53,15 @@ class RestExtensionTest extends \PHPUnit_Framework_TestCase
         $this->extension->load($container, $this->processConfiguration([]));
 
         $this->assertHttpClientRegistered($container, DiscoveryHttpClientFactory::class);
+    }
+
+    public function test_it_loads_the_buzz_adapter()
+    {
+        $container = new ContainerBuilder();
+
+        $this->extension->load($container, $this->processConfiguration(['buzz' => true, 'discovery' => false]));
+
+        $this->assertHttpClientRegistered($container, BuzzHttpClientFactory::class);
     }
 
     public function test_it_loads_the_http_client_argument_resolver()

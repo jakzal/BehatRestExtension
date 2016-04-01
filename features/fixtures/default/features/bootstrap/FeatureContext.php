@@ -2,11 +2,13 @@
 
 use Behat\Behat\Context\Context;
 use GuzzleHttp\Psr7\Request;
+use Http\Adapter\Buzz\Client as BuzzAdapter;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Http\Client\HttpClient;
 use PHPUnit_Framework_Assert as PHPUnit;
 use Psr\Http\Message\ResponseInterface;
 
-class PostcodeSearchContext implements Context
+class FeatureContext implements Context
 {
     /**
      * @var HttpClient
@@ -19,6 +21,25 @@ class PostcodeSearchContext implements Context
     public function __construct(HttpClient $httpClient)
     {
         $this->httpClient = $httpClient;
+    }
+
+    /**
+     * Echoes the http client name so it could be inspected.
+     *
+     * @BeforeScenario
+     */
+    public function debugHttpClient()
+    {
+        $clients = [
+            BuzzAdapter::class => 'buzz',
+            GuzzleAdapter::class => 'guzzle',
+        ];
+
+        $class = get_class($this->httpClient);
+
+        $name = isset($clients[$class]) ? $clients[$class] : 'unknown';
+
+        echo '[DEBUG][HTTP CLIENT] '.$name."\n";
     }
 
     /**
