@@ -6,27 +6,25 @@ use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use Zalas\Behat\RestExtension\Context\Argument\HttpClientArgumentResolver;
-use Zalas\Behat\RestExtension\ServiceContainer\Adapter\AdapterFactory;
-use Zalas\Behat\RestExtension\ServiceContainer\Adapter\DiscoveryFactory;
-use Zalas\Behat\RestExtension\ServiceContainer\Adapter\GuzzleFactory;
+use Zalas\Behat\RestExtension\ServiceContainer\Plugin\ArgumentResolverPlugin;
+use Zalas\Behat\RestExtension\ServiceContainer\Plugin\DiscoveryPlugin;
+use Zalas\Behat\RestExtension\ServiceContainer\Plugin\GuzzlePlugin;
 
 class RestExtension implements Extension
 {
     const CONFIG_KEY = 'rest';
 
     /**
-     * @var AdapterFactory[]
+     * @var Plugin[]
      */
-    private $factories;
+    private $plugins;
 
     public function __construct()
     {
-        $this->factories = [
-            new GuzzleFactory(),
-            new DiscoveryFactory(),
+        $this->plugins = [
+            new GuzzlePlugin(),
+            new DiscoveryPlugin(),
+            new ArgumentResolverPlugin(),
         ];
     }
 
@@ -57,8 +55,8 @@ class RestExtension implements Extension
      */
     public function configure(ArrayNodeDefinition $builder)
     {
-        foreach ($this->factories as $factory) {
-            $factory->configure($builder);
+        foreach ($this->plugins as $plugin) {
+            $plugin->configure($builder);
         }
     }
 
@@ -67,37 +65,16 @@ class RestExtension implements Extension
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        $this->loadFactory($container, $config);
-        $this->addArgumentResolver($container);
+        foreach ($this->plugins as $plugin) {
+            $plugin->load($container, $config);
+        }
 
-        if (!$container->hasDefinition('rest.http_client_factory')) {
+        $services = $container->findTaggedServiceIds('rest.http_client_factory');
+
+        if (0 === count($services)) {
             throw new \RuntimeException('No http client adapter is configured. To enable the auto discovery of http clients install the "php-http/discovery" and the "puli/composer-plugin" packages.');
         }
-    }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $config
-     */
-    private function loadFactory(ContainerBuilder $container, array $config)
-    {
-        foreach ($this->factories as $factory) {
-            if ($factory->isEnabled($config)) {
-                $container->setDefinition('rest.http_client_factory', $factory->buildAdapter($config));
-
-                return;
-            }
-        }
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param                  $options
-     */
-    private function addArgumentResolver(ContainerBuilder $container)
-    {
-        $definition = new Definition(HttpClientArgumentResolver::class, [new Reference('rest.http_client_factory')]);
-        $definition->addTag('context.argument_resolver');
-        $container->setDefinition('rest.argument_resolver.http_client', $definition);
+        $container->setAlias('rest.http_client_factory', key($services));
     }
 }

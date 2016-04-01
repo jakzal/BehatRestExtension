@@ -32,7 +32,7 @@ class BehatRunnerContext implements Context
      */
     public function givenBehatConfiguration(PyStringNode $content)
     {
-        $this->behatRunner->dumpFile('behat.yml', $content->getRaw());
+        $this->behatRunner->addFile('behat.yml', $content->getRaw());
     }
 
     /**
@@ -40,7 +40,7 @@ class BehatRunnerContext implements Context
      */
     public function aContextFileNamedWith($fileName, PyStringNode $content)
     {
-        $this->behatRunner->dumpFile($fileName, $content->getRaw());
+        $this->behatRunner->addFile($fileName, $content->getRaw());
     }
 
     /**
@@ -103,5 +103,13 @@ class BehatRunnerContext implements Context
         foreach ($expectedOutput->getStrings() as $expectedLine) {
             PHPUnit::assertRegExp('/'.preg_quote($expectedLine, '/').'/sm', $this->behatRunner->getFullOutput());
         }
+    }
+
+    /**
+     * @param string $path
+     */
+    public function givenBehatProject($path)
+    {
+        $this->behatRunner->addDirectory($path);
     }
 }

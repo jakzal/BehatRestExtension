@@ -4,6 +4,8 @@ default:
             tags: "~@wip"
     suites:
         search:
+            filters:
+                tags: "~@fixtures"
             contexts:
                 - PhpServerContext
                 - BehatRunnerContext

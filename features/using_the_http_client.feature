@@ -153,7 +153,7 @@ Feature: Using the http client
     Then it should pass
 
   @wip
-  Scenario: Changing the client driver
+  Scenario: Changing the http client adapter
     Given a behat configuration:
     """
     default:
