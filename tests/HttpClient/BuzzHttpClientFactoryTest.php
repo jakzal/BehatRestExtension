@@ -4,6 +4,9 @@ namespace Zalas\Behat\RestExtension\HttpClient;
 
 use Http\Message\MessageFactory;
 
+/**
+ * @group integration
+ */
 class BuzzHttpClientFactoryTest extends HttpClientTestCase
 {
     /**
