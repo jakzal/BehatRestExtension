@@ -12,16 +12,6 @@ use Zalas\Behat\RestExtension\ServiceContainer\Plugin;
 final class ArgumentResolverPlugin implements Plugin
 {
     /**
-     * @param array $config
-     *
-     * @return bool
-     */
-    public function isEnabled(array $config)
-    {
-        return true;
-    }
-
-    /**
      * @param ContainerBuilder $container
      * @param array            $config
      */
