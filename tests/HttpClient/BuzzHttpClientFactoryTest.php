@@ -2,16 +2,18 @@
 
 namespace Zalas\Behat\RestExtension\HttpClient;
 
+use Http\Message\MessageFactory;
+
 /**
  * @group integration
  */
-class GuzzleHttpClientFactoryTest extends HttpClientTestCase
+class BuzzHttpClientFactoryTest extends HttpClientTestCase
 {
     /**
      * @return HttpClientFactory
      */
     protected function createHttpClientFactory()
     {
-        return new GuzzleHttpClientFactory(['base_url' => 'http://localhost']);
+        return new BuzzHttpClientFactory($this->prophesize(MessageFactory::class)->reveal());
     }
 }

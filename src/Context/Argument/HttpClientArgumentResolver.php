@@ -2,13 +2,11 @@
 
 namespace Zalas\Behat\RestExtension\Context\Argument;
 
-use Behat\Behat\Context\Argument\ArgumentResolver;
 use Http\Client\HttpClient;
 use ReflectionClass;
-use ReflectionMethod;
 use Zalas\Behat\RestExtension\HttpClient\HttpClientFactory;
 
-class HttpClientArgumentResolver implements ArgumentResolver
+class HttpClientArgumentResolver extends ArgumentResolver
 {
     /**
      * @var HttpClientFactory
@@ -16,48 +14,28 @@ class HttpClientArgumentResolver implements ArgumentResolver
     private $factory;
 
     /**
-     * @var array
-     */
-    private $options;
-
-    /**
      * @param HttpClientFactory $factory
-     * @param array             $options
      */
-    public function __construct(HttpClientFactory $factory, array $options = [])
+    public function __construct(HttpClientFactory $factory)
     {
         $this->factory = $factory;
-        $this->options = $options;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function resolveArguments(ReflectionClass $classReflection, array $arguments)
-    {
-        if ($constructor = $classReflection->getConstructor()) {
-            return $this->resolveConstructorArguments($constructor, $arguments);
-        }
-
-        return $arguments;
-    }
-
-    /**
-     * @param ReflectionMethod $constructor
-     * @param array            $arguments
+     * @param ReflectionClass $class
      *
-     * @return array
+     * @return bool
      */
-    private function resolveConstructorArguments(ReflectionMethod $constructor, array $arguments)
+    protected function matches(ReflectionClass $class)
     {
-        $constructorParameters = $constructor->getParameters();
+        return HttpClient::class === $class->name;
+    }
 
-        foreach ($constructorParameters as $position => $parameter) {
-            if ($parameter->getClass() && HttpClient::class === $parameter->getClass()->name) {
-                $arguments[$position] = $this->factory->createClient($this->options);
-            }
-        }
-
-        return $arguments;
+    /**
+     * @return HttpClient
+     */
+    protected function resolveArgument()
+    {
+        return $this->factory->createClient();
     }
 }
