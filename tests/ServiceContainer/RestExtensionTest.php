@@ -4,13 +4,11 @@ namespace Zalas\Behat\RestExtension\ServiceContainer;
 
 use Behat\Testwork\ServiceContainer\Configuration\ConfigurationTree;
 use Behat\Testwork\ServiceContainer\Extension;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Http\Adapter\Buzz\Client as BuzzAdapter;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Http\Message\MessageFactory;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Zalas\Behat\RestExtension\Context\Argument\HttpClientArgumentResolver;
-use Zalas\Behat\RestExtension\Context\Argument\MessageFactoryArgumentResolver;
 
 /**
  * @group integration
@@ -56,51 +54,34 @@ class RestExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $this->loadExtension(['guzzle' => true, 'discovery' => false]);
 
-        $this->assertHttpClientRegistered(GuzzleAdapter::class);
+        $this->assertServiceRegistered('rest.http_client', GuzzleAdapter::class);
     }
 
     public function test_it_loads_the_discovery_adapter()
     {
         $this->loadExtension([]);
 
-        $this->assertHttpClientRegistered(BuzzAdapter::class);
+        $this->assertServiceRegistered('rest.http_client', BuzzAdapter::class);
     }
 
     public function test_it_loads_the_buzz_adapter()
     {
         $this->loadExtension(['buzz' => true, 'discovery' => false]);
 
-        $this->assertHttpClientRegistered(BuzzAdapter::class);
-    }
-
-    public function test_it_loads_the_http_client_argument_resolver()
-    {
-        $this->loadExtension($this->processConfiguration([]));
-
-        $this->assertTrue($this->container->has('rest.argument_resolver.http_client'));
-        $this->assertInstanceOf(HttpClientArgumentResolver::class, $this->container->get('rest.argument_resolver.http_client'));
-    }
-
-    public function test_it_loads_the_message_factory_argument_resolver()
-    {
-        $this->loadExtension([]);
-
-        $this->assertTrue($this->container->has('rest.argument_resolver.message_factory'));
-        $this->assertInstanceOf(MessageFactoryArgumentResolver::class, $this->container->get('rest.argument_resolver.message_factory'));
+        $this->assertServiceRegistered('rest.http_client', BuzzAdapter::class);
     }
 
     public function test_it_loads_the_message_factory()
     {
         $this->loadExtension([]);
 
-        $this->assertTrue($this->container->has('rest.message_factory'));
-        $this->assertInstanceOf(MessageFactory::class, $this->container->get('rest.message_factory'));
+        $this->assertServiceRegistered('rest.message_factory', MessageFactory::class);
     }
 
-    private function assertHttpClientRegistered($class)
+    private function assertServiceRegistered($id, $class)
     {
-        $this->assertTrue($this->container->has('rest.http_client'));
-        $this->assertInstanceOf($class, $this->container->get('rest.http_client'));
+        $this->assertTrue($this->container->has($id));
+        $this->assertInstanceOf($class, $this->container->get($id));
     }
 
     private function loadExtension(array $config = [])
