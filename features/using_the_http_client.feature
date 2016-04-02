@@ -27,6 +27,7 @@ Feature: Using the http client
     {
         private $httpClient;
         private $messageFactory;
+        private $lastResponse;
 
         public function __construct(HttpClient $httpClient, MessageFactory $messageFactory)
         {
@@ -115,6 +116,7 @@ Feature: Using the http client
     {
         private $httpClient;
         private $messageFactory;
+        private $lastResponse;
 
         public function __construct(HttpClient $httpClient, MessageFactory $messageFactory)
         {

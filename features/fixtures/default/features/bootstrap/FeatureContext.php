@@ -21,6 +21,11 @@ class FeatureContext implements Context
     private $messageFactory;
 
     /**
+     * @var ResponseInterface|null
+     */
+    private $lastResponse;
+
+    /**
      * @param HttpClient     $httpClient
      * @param MessageFactory $messageFactory
      */
