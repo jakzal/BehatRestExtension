@@ -8,7 +8,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Zalas\Behat\RestExtension\Context\Argument\Fixtures\ClassWithHttpClientArgument;
 use Zalas\Behat\RestExtension\Context\Argument\Fixtures\ClassWithNoConstructor;
 use Zalas\Behat\RestExtension\Context\Argument\Fixtures\ClassWithNoHttpClientArgument;
-use Zalas\Behat\RestExtension\HttpClient\HttpClientFactory;
 
 class HttpClientArgumentResolverTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,14 +17,14 @@ class HttpClientArgumentResolverTest extends \PHPUnit_Framework_TestCase
     private $argumentResolver;
 
     /**
-     * @var HttpClientFactory|ObjectProphecy
+     * @var HttpClient|ObjectProphecy
      */
-    private $factory;
+    private $httpClient;
 
     protected function setUp()
     {
-        $this->factory = $this->prophesize(HttpClientFactory::class);
-        $this->argumentResolver = new HttpClientArgumentResolver($this->factory->reveal());
+        $this->httpClient = $this->prophesize(HttpClient::class);
+        $this->argumentResolver = new HttpClientArgumentResolver($this->httpClient->reveal());
     }
 
     public function test_it_is_an_argument_resolver()
@@ -55,12 +54,10 @@ class HttpClientArgumentResolverTest extends \PHPUnit_Framework_TestCase
 
     public function test_it_adds_the_http_client_argument()
     {
-        $httpClient = $this->prophesize(HttpClient::class)->reveal();
-        $this->factory->createClient()->willReturn($httpClient);
         $class = new \ReflectionClass(ClassWithHttpClientArgument::class);
 
         $resolved = $this->argumentResolver->resolveArguments($class, []);
 
-        $this->assertSame([ClassWithHttpClientArgument::POSITION => $httpClient], $resolved);
+        $this->assertSame([ClassWithHttpClientArgument::POSITION => $this->httpClient->reveal()], $resolved);
     }
 }

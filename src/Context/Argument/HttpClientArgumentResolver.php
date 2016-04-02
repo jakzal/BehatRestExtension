@@ -4,21 +4,20 @@ namespace Zalas\Behat\RestExtension\Context\Argument;
 
 use Http\Client\HttpClient;
 use ReflectionClass;
-use Zalas\Behat\RestExtension\HttpClient\HttpClientFactory;
 
 class HttpClientArgumentResolver extends ArgumentResolver
 {
     /**
-     * @var HttpClientFactory
+     * @var HttpClient
      */
-    private $factory;
+    private $httpClient;
 
     /**
-     * @param HttpClientFactory $factory
+     * @param HttpClient $httpClient
      */
-    public function __construct(HttpClientFactory $factory)
+    public function __construct(HttpClient $httpClient)
     {
-        $this->factory = $factory;
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -36,6 +35,6 @@ class HttpClientArgumentResolver extends ArgumentResolver
      */
     protected function resolveArgument()
     {
-        return $this->factory->createClient();
+        return $this->httpClient;
     }
 }

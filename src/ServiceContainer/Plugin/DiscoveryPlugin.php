@@ -17,7 +17,7 @@ final class DiscoveryPlugin implements Plugin
      */
     public function load(ContainerBuilder $container, array $config)
     {
-        if (!class_exists(HttpClientDiscovery::class)) {
+        if (!class_exists(HttpClientDiscovery::class) || false === $config['discovery']['enabled']) {
             return;
         }
 

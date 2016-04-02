@@ -34,8 +34,7 @@ final class ArgumentResolverPlugin implements Plugin
      */
     private function registerHttpClientFactoryArgumentResolver(ContainerBuilder $container)
     {
-        $definition = new Definition(HttpClientArgumentResolver::class, [new Reference('rest.http_client_factory')]);
-        $definition->setPublic(false);
+        $definition = new Definition(HttpClientArgumentResolver::class, [new Reference('rest.http_client')]);
         $definition->addTag('context.argument_resolver');
         $container->setDefinition('rest.argument_resolver.http_client', $definition);
     }
@@ -46,7 +45,6 @@ final class ArgumentResolverPlugin implements Plugin
     private function registerMessageFactoryArgumentResolver(ContainerBuilder $container)
     {
         $definition = new Definition(MessageFactoryArgumentResolver::class, [new Reference('rest.message_factory')]);
-        $definition->setPublic(false);
         $definition->addTag('context.argument_resolver');
         $container->setDefinition('rest.argument_resolver.message_factory', $definition);
     }

@@ -4,8 +4,11 @@ namespace Zalas\Behat\RestExtension\ServiceContainer;
 
 use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
+use Http\Client\HttpClient;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\ArgumentResolverPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\BuzzPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\DiscoveryPlugin;
@@ -75,6 +78,8 @@ class RestExtension implements Extension
 
         $this->aliasHttpClientFactory($container);
         $this->aliasMessageFactory($container);
+
+        $this->registerHttpClient($container);
     }
 
     /**
@@ -103,5 +108,15 @@ class RestExtension implements Extension
         }
 
         $container->setAlias('rest.message_factory', key($services));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function registerHttpClient(ContainerBuilder $container)
+    {
+        $definition = new Definition(HttpClient::class);
+        $definition->setFactory([new Reference('rest.http_client_factory'), 'createClient']);
+        $container->setDefinition('rest.http_client', $definition);
     }
 }
