@@ -53,6 +53,9 @@ final class BehatRunner
         $this->filesystem->dumpFile($this->workingDir.'/'.$filePath, $content);
     }
 
+    /**
+     * @param string $path
+     */
     public function addDirectory($path)
     {
         $this->filesystem->mirror($path, $this->workingDir);
