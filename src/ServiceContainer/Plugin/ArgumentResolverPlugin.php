@@ -4,7 +4,6 @@ namespace Zalas\Behat\RestExtension\ServiceContainer\Plugin;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Zalas\Behat\RestExtension\Context\Argument\HttpClientArgumentResolver;
 use Zalas\Behat\RestExtension\Context\Argument\MessageFactoryArgumentResolver;
@@ -34,9 +33,9 @@ final class ArgumentResolverPlugin implements Plugin
      */
     private function registerHttpClientFactoryArgumentResolver(ContainerBuilder $container)
     {
-        $definition = new Definition(HttpClientArgumentResolver::class, [new Reference('rest.http_client')]);
-        $definition->addTag('context.argument_resolver');
-        $container->setDefinition('rest.argument_resolver.http_client', $definition);
+        $container->register('rest.argument_resolver.http_client', HttpClientArgumentResolver::class)
+            ->addArgument(new Reference('rest.http_client'))
+            ->addTag('context.argument_resolver');
     }
 
     /**
@@ -44,8 +43,8 @@ final class ArgumentResolverPlugin implements Plugin
      */
     private function registerMessageFactoryArgumentResolver(ContainerBuilder $container)
     {
-        $definition = new Definition(MessageFactoryArgumentResolver::class, [new Reference('rest.message_factory')]);
-        $definition->addTag('context.argument_resolver');
-        $container->setDefinition('rest.argument_resolver.message_factory', $definition);
+        $container->register('rest.argument_resolver.message_factory', MessageFactoryArgumentResolver::class)
+            ->addArgument(new Reference('rest.message_factory'))
+            ->addTag('context.argument_resolver');
     }
 }

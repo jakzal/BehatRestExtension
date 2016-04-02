@@ -6,7 +6,6 @@ use Http\Adapter\Buzz\Client as BuzzAdapter;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Zalas\Behat\RestExtension\HttpClient\BuzzHttpClientFactory;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin;
@@ -27,12 +26,9 @@ final class BuzzPlugin implements Plugin
             throw new \RuntimeException('To use the Buzz http client you need to install the "php-http/buzz-adapter" package.');
         }
 
-        $definition = new Definition(
-            BuzzHttpClientFactory::class,
-            [new Reference('rest.message_factory', ContainerInterface::NULL_ON_INVALID_REFERENCE)]
-        );
-        $definition->addTag('rest.http_client_factory');
-        $container->setDefinition('rest.http_client_factory.buzz', $definition);
+        $container->register('rest.http_client_factory.buzz', BuzzHttpClientFactory::class)
+            ->addArgument(new Reference('rest.message_factory', ContainerInterface::NULL_ON_INVALID_REFERENCE))
+            ->addTag('rest.http_client_factory');
     }
 
     /**

@@ -5,7 +5,6 @@ namespace Zalas\Behat\RestExtension\ServiceContainer\Plugin;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Zalas\Behat\RestExtension\HttpClient\GuzzleHttpClientFactory;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin;
 
@@ -25,9 +24,9 @@ final class GuzzlePlugin implements Plugin
             throw new \RuntimeException('To use the Guzzle http client you need to install the "php-http/guzzle6-adapter" package.');
         }
 
-        $definition = new Definition(GuzzleHttpClientFactory::class, [$config['guzzle']['config']]);
-        $definition->addTag('rest.http_client_factory');
-        $container->setDefinition('rest.http_client_factory.guzzle', $definition);
+        $container->register('rest.http_client_factory.guzzle', GuzzleHttpClientFactory::class)
+            ->addArgument($config['guzzle']['config'])
+            ->addTag('rest.http_client_factory');
     }
 
     /**
