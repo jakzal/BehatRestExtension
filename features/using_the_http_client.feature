@@ -18,18 +18,20 @@ Feature: Using the http client
     <?php
 
     use Behat\Behat\Context\Context;
-    use GuzzleHttp\Psr7\Request;
     use PHPUnit_Framework_Assert as PHPUnit;
     use Psr\Http\Message\ResponseInterface;
     use Http\Client\HttpClient;
+    use Http\Message\MessageFactory;
 
     class PostcodeSearchContext implements Context
     {
         private $httpClient;
+        private $messageFactory;
 
-        public function __construct(HttpClient $httpClient)
+        public function __construct(HttpClient $httpClient, MessageFactory $messageFactory)
         {
             $this->httpClient = $httpClient;
+            $this->messageFactory = $messageFactory;
         }
 
         /**
@@ -39,7 +41,7 @@ Feature: Using the http client
         {
             $uri = sprintf('http://localhost:8000/postcodes/%s', $postcode);
 
-            $this->lastResponse = $this->httpClient->sendRequest(new Request('GET', $uri));
+            $this->lastResponse = $this->httpClient->sendRequest($this->messageFactory->createRequest('GET', $uri));
         }
 
         /**
@@ -104,18 +106,20 @@ Feature: Using the http client
     <?php
 
     use Behat\Behat\Context\Context;
-    use GuzzleHttp\Psr7\Request;
     use PHPUnit_Framework_Assert as PHPUnit;
     use Psr\Http\Message\ResponseInterface;
     use Http\Client\HttpClient;
+    use Http\Message\MessageFactory;
 
     class PostcodeSearchContext implements Context
     {
         private $httpClient;
+        private $messageFactory;
 
-        public function __construct(HttpClient $httpClient)
+        public function __construct(HttpClient $httpClient, MessageFactory $messageFactory)
         {
             $this->httpClient = $httpClient;
+            $this->messageFactory = $messageFactory;
         }
 
         /**
@@ -125,7 +129,7 @@ Feature: Using the http client
         {
             $uri = sprintf('/postcodes/%s', $postcode);
 
-            $this->lastResponse = $this->httpClient->sendRequest(new Request('GET', $uri));
+            $this->lastResponse = $this->httpClient->sendRequest($this->messageFactory->createRequest('GET', $uri));
         }
 
         /**

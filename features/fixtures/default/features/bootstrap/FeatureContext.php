@@ -1,10 +1,10 @@
 <?php
 
 use Behat\Behat\Context\Context;
-use GuzzleHttp\Psr7\Request;
 use Http\Adapter\Buzz\Client as BuzzAdapter;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Http\Client\HttpClient;
+use Http\Message\MessageFactory;
 use PHPUnit_Framework_Assert as PHPUnit;
 use Psr\Http\Message\ResponseInterface;
 
@@ -16,11 +16,18 @@ class FeatureContext implements Context
     private $httpClient;
 
     /**
-     * @param HttpClient $httpClient
+     * @var MessageFactory
      */
-    public function __construct(HttpClient $httpClient)
+    private $messageFactory;
+
+    /**
+     * @param HttpClient     $httpClient
+     * @param MessageFactory $messageFactory
+     */
+    public function __construct(HttpClient $httpClient, MessageFactory $messageFactory)
     {
         $this->httpClient = $httpClient;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -49,7 +56,7 @@ class FeatureContext implements Context
     {
         $uri = sprintf('http://localhost:8000/postcodes/%s', $postcode);
 
-        $this->lastResponse = $this->httpClient->sendRequest(new Request('GET', $uri));
+        $this->lastResponse = $this->httpClient->sendRequest($this->messageFactory->createRequest('GET', $uri));
     }
 
     /**
