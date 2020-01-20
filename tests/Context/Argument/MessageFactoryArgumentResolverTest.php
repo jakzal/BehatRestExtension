@@ -4,10 +4,11 @@ namespace Zalas\Behat\RestExtension\Context\Argument;
 
 use Behat\Behat\Context\Argument\ArgumentResolver;
 use Http\Message\MessageFactory;
+use PHPUnit\Framework\TestCase;
 use Zalas\Behat\RestExtension\Context\Argument\Fixtures\ClassWithMessageFactoryArgument;
 use Zalas\Behat\RestExtension\Context\Argument\Fixtures\ClassWithNoMessageFactoryArgument;
 
-class MessageFactoryArgumentResolverTest extends \PHPUnit_Framework_TestCase
+class MessageFactoryArgumentResolverTest extends TestCase
 {
     /**
      * @var MessageFactoryArgumentResolver
@@ -19,7 +20,7 @@ class MessageFactoryArgumentResolverTest extends \PHPUnit_Framework_TestCase
      */
     private $messageFactory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->messageFactory = $this->prophesize(MessageFactory::class)->reveal();
         $this->argumentResolver = new MessageFactoryArgumentResolver($this->messageFactory);

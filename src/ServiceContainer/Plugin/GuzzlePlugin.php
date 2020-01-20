@@ -25,6 +25,7 @@ final class GuzzlePlugin implements Plugin
         }
 
         $container->register('rest.http_client_factory.guzzle', GuzzleHttpClientFactory::class)
+            ->setPublic(true)
             ->addArgument($config['guzzle']['config'])
             ->addTag('rest.http_client_factory');
     }

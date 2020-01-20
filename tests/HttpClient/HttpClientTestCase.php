@@ -3,11 +3,12 @@
 namespace Zalas\Behat\RestExtension\HttpClient;
 
 use Http\Client\HttpClient;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group integration
  */
-abstract class HttpClientTestCase extends \PHPUnit_Framework_TestCase
+abstract class HttpClientTestCase extends TestCase
 {
     /**
      * @var HttpClientFactory

@@ -2,12 +2,13 @@
 
 namespace Zalas\Behat\RestExtension\ServiceContainer\Plugin;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin;
 
-abstract class PluginTestCase extends \PHPUnit_Framework_TestCase
+abstract class PluginTestCase extends TestCase
 {
     /**
      * @var Plugin

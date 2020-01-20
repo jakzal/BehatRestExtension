@@ -33,12 +33,15 @@ final class BehatRunner
     {
         $this->workingDir = $workingDir;
         $this->phpBin = $this->findPhpBinary();
-        $this->process = new Process(null);
+        $this->process = new Process(
+            [$this->phpBin, BEHAT_BIN_PATH, strtr('--format-settings=\'{"timer": false}\'', ['\'' => '"', '"' => '\"'])],
+            $this->workingDir
+        );
         $this->filesystem = new Filesystem();
 
         $this->filesystem->mkdir($this->workingDir, 0777);
     }
-    
+
     public function removeWorkspace()
     {
         $this->filesystem->remove($this->workingDir);
@@ -63,15 +66,6 @@ final class BehatRunner
 
     public function run()
     {
-        $this->process->setWorkingDirectory($this->workingDir);
-        $this->process->setCommandLine(
-            sprintf(
-                '%s %s %s',
-                $this->phpBin,
-                escapeshellarg(BEHAT_BIN_PATH),
-                strtr('--format-settings=\'{"timer": false}\'', ['\'' => '"', '"' => '\"'])
-            )
-        );
         $this->process->start();
         $this->process->wait();
     }

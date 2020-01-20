@@ -5,7 +5,7 @@ use Http\Adapter\Buzz\Client as BuzzAdapter;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
-use PHPUnit_Framework_Assert as PHPUnit;
+use PHPUnit\Framework\Assert;
 use Psr\Http\Message\ResponseInterface;
 
 class FeatureContext implements Context
@@ -69,16 +69,16 @@ class FeatureContext implements Context
      */
     public function iShouldSeeItsLocation()
     {
-        PHPUnit::assertInstanceOf(ResponseInterface::class, $this->lastResponse);
-        PHPUnit::assertSame(200, $this->lastResponse->getStatusCode(), 'Got a successful response');
+        Assert::assertInstanceOf(ResponseInterface::class, $this->lastResponse);
+        Assert::assertSame(200, $this->lastResponse->getStatusCode(), 'Got a successful response');
 
         $json = json_decode($this->lastResponse->getBody(), true);
-        PHPUnit::assertInternalType('array', $json, 'Response contains a query result');
-        PHPUnit::arrayHasKey('result', $json, 'Result found in the response');
-        PHPUnit::assertArrayHasKey('latitude', $json['result'], 'Latitude found in the response');
-        PHPUnit::assertArrayHasKey('longitude', $json['result'], 'Longitude found in the response');
-        PHPUnit::assertInternalType('double', $json['result']['latitude'], 'Latitude is a double');
-        PHPUnit::assertInternalType('double', $json['result']['longitude'], 'Longitude is a double');
+        Assert::assertInternalType('array', $json, 'Response contains a query result');
+        Assert::arrayHasKey('result', $json, 'Result found in the response');
+        Assert::assertArrayHasKey('latitude', $json['result'], 'Latitude found in the response');
+        Assert::assertArrayHasKey('longitude', $json['result'], 'Longitude found in the response');
+        Assert::assertInternalType('double', $json['result']['latitude'], 'Latitude is a double');
+        Assert::assertInternalType('double', $json['result']['longitude'], 'Longitude is a double');
     }
 
     /**
@@ -86,6 +86,6 @@ class FeatureContext implements Context
      */
     public function iShouldBeInformedThePostcodeWasNotFound()
     {
-        PHPUnit::assertSame(404, $this->lastResponse->getStatusCode(), '404 Not Found');
+        Assert::assertSame(404, $this->lastResponse->getStatusCode(), '404 Not Found');
     }
 }

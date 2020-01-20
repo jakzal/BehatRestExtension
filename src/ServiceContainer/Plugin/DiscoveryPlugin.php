@@ -21,6 +21,7 @@ final class DiscoveryPlugin implements Plugin
         }
 
         $container->register('rest.http_client_factory.discovery', DiscoveryHttpClientFactory::class)
+            ->setPublic(true)
             ->addTag('rest.http_client_factory');
     }
 

@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./vendor/autoload.php" colors="true">
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.0/phpunit.xsd"
+        bootstrap="./vendor/autoload.php"
+        colors="true">
     <testsuites>
-        <testsuite name="unit">
+        <testsuite name="project test suite">
             <directory>tests</directory>
-            <groups>
-                <exclude>
-                    <group>integration</group>
-                </exclude>
-            </groups>
-        </testsuite>
-        <testsuite name="integration">
-            <directory>tests</directory>
-            <groups>
-                <include>
-                    <group>integration</group>
-                </include>
-            </groups>
         </testsuite>
     </testsuites>
     <php>

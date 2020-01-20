@@ -13,7 +13,7 @@ final class DummyHttpClient implements HttpClient
      *
      * @return ResponseInterface
      */
-    public function sendRequest(RequestInterface $request)
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
     }
 }

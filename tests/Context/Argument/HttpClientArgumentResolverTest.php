@@ -4,12 +4,13 @@ namespace Zalas\Behat\RestExtension\Context\Argument;
 
 use Behat\Behat\Context\Argument\ArgumentResolver;
 use Http\Client\HttpClient;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Zalas\Behat\RestExtension\Context\Argument\Fixtures\ClassWithHttpClientArgument;
 use Zalas\Behat\RestExtension\Context\Argument\Fixtures\ClassWithNoConstructor;
 use Zalas\Behat\RestExtension\Context\Argument\Fixtures\ClassWithNoHttpClientArgument;
 
-class HttpClientArgumentResolverTest extends \PHPUnit_Framework_TestCase
+class HttpClientArgumentResolverTest extends TestCase
 {
     /**
      * @var HttpClientArgumentResolver
@@ -21,7 +22,7 @@ class HttpClientArgumentResolverTest extends \PHPUnit_Framework_TestCase
      */
     private $httpClient;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->httpClient = $this->prophesize(HttpClient::class);
         $this->argumentResolver = new HttpClientArgumentResolver($this->httpClient->reveal());

@@ -18,7 +18,7 @@ Feature: Using the http client
     <?php
 
     use Behat\Behat\Context\Context;
-    use PHPUnit_Framework_Assert as PHPUnit;
+    use PHPUnit\Framework\Assert;
     use Psr\Http\Message\ResponseInterface;
     use Http\Client\HttpClient;
     use Http\Message\MessageFactory;
@@ -50,16 +50,16 @@ Feature: Using the http client
          */
         public function iShouldSeeItsLocation()
         {
-            PHPUnit::assertInstanceOf(ResponseInterface::class, $this->lastResponse);
-            PHPUnit::assertSame(200, $this->lastResponse->getStatusCode(), 'Got a successful response');
+            Assert::assertInstanceOf(ResponseInterface::class, $this->lastResponse);
+            Assert::assertSame(200, $this->lastResponse->getStatusCode(), 'Got a successful response');
 
             $json = json_decode($this->lastResponse->getBody(), true);
-            PHPUnit::assertInternalType('array', $json, 'Response contains a query result');
-            PHPUnit::arrayHasKey('result', $json, 'Result found in the response');
-            PHPUnit::assertArrayHasKey('latitude', $json['result'], 'Latitude found in the response');
-            PHPUnit::assertArrayHasKey('longitude', $json['result'], 'Longitude found in the response');
-            PHPUnit::assertInternalType('double', $json['result']['latitude'], 'Latitude is a double');
-            PHPUnit::assertInternalType('double', $json['result']['longitude'], 'Longitude is a double');
+            Assert::assertInternalType('array', $json, 'Response contains a query result');
+            Assert::arrayHasKey('result', $json, 'Result found in the response');
+            Assert::assertArrayHasKey('latitude', $json['result'], 'Latitude found in the response');
+            Assert::assertArrayHasKey('longitude', $json['result'], 'Longitude found in the response');
+            Assert::assertInternalType('double', $json['result']['latitude'], 'Latitude is a double');
+            Assert::assertInternalType('double', $json['result']['longitude'], 'Longitude is a double');
         }
 
         /**
@@ -67,7 +67,7 @@ Feature: Using the http client
          */
         public function iShouldBeInformedThePostcodeWasNotFound()
         {
-            PHPUnit::assertSame(404, $this->lastResponse->getStatusCode(), '404 Not Found');
+            Assert::assertSame(404, $this->lastResponse->getStatusCode(), '404 Not Found');
         }
     }
     """
@@ -107,7 +107,7 @@ Feature: Using the http client
     <?php
 
     use Behat\Behat\Context\Context;
-    use PHPUnit_Framework_Assert as PHPUnit;
+    use PHPUnit\Framework\Assert;
     use Psr\Http\Message\ResponseInterface;
     use Http\Client\HttpClient;
     use Http\Message\MessageFactory;
@@ -139,8 +139,8 @@ Feature: Using the http client
          */
         public function iShouldSeeItsLocation()
         {
-            PHPUnit::assertInstanceOf(ResponseInterface::class, $this->lastResponse);
-            PHPUnit::assertSame(200, $this->lastResponse->getStatusCode(), 'Got a successful response');
+            Assert::assertInstanceOf(ResponseInterface::class, $this->lastResponse);
+            Assert::assertSame(200, $this->lastResponse->getStatusCode(), 'Got a successful response');
         }
     }
     """
@@ -157,16 +157,3 @@ Feature: Using the http client
     """
     When I run behat
     Then it should pass
-
-  Scenario: Changing the http client adapter
-    Given a behat configuration:
-    """
-    default:
-      extensions:
-        Zalas\Behat\RestExtension:
-          buzz: ~
-    """
-    And a feature using an http client
-    When I run behat
-    Then it should pass
-    And the "buzz" http client should have been used

@@ -10,7 +10,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\ArgumentResolverPlugin;
-use Zalas\Behat\RestExtension\ServiceContainer\Plugin\BuzzPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\DiscoveryPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\GuzzleMessageFactoryPlugin;
 use Zalas\Behat\RestExtension\ServiceContainer\Plugin\GuzzlePlugin;
@@ -29,7 +28,6 @@ class RestExtension implements Extension
         $this->plugins = [
             new GuzzlePlugin(),
             new GuzzleMessageFactoryPlugin(),
-            new BuzzPlugin(),
             new DiscoveryPlugin(),
             new ArgumentResolverPlugin(),
         ];
@@ -93,7 +91,7 @@ class RestExtension implements Extension
             throw new \RuntimeException('No http client adapter is configured. To enable the auto discovery of http clients install the "php-http/discovery" and the "puli/composer-plugin" packages.');
         }
 
-        $container->setAlias('rest.http_client_factory', key($services));
+        $container->setAlias('rest.http_client_factory', key($services))->setPublic(true);
     }
 
     /**
@@ -107,7 +105,7 @@ class RestExtension implements Extension
             throw new \RuntimeException('No message factory is configured. Install one of "guzzlehttp/psr7" or "zendframework/zend-diactoros".');
         }
 
-        $container->setAlias('rest.message_factory', key($services));
+        $container->setAlias('rest.message_factory', key($services))->setPublic(true);
     }
 
     /**
@@ -117,6 +115,6 @@ class RestExtension implements Extension
     {
         $definition = new Definition(HttpClient::class);
         $definition->setFactory([new Reference('rest.http_client_factory'), 'createClient']);
-        $container->setDefinition('rest.http_client', $definition);
+        $container->setDefinition('rest.http_client', $definition)->setPublic(true);
     }
 }

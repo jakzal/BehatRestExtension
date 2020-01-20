@@ -2,7 +2,7 @@
 
 use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\PyStringNode;
-use PHPUnit_Framework_Assert as PHPUnit;
+use PHPUnit\Framework\Assert;
 
 class BehatRunnerContext implements Context
 {
@@ -57,9 +57,9 @@ class BehatRunnerContext implements Context
     public function itShouldPass()
     {
         try {
-            PHPUnit::assertSame(0, $this->behatRunner->getExitCode(), 'Command terminated with an error');
-            PHPUnit::assertStringNotMatchesFormat('PHP Warning:', $this->behatRunner->getFullOutput());
-            PHPUnit::assertStringNotMatchesFormat('PHP Notice:', $this->behatRunner->getFullOutput());
+            Assert::assertSame(0, $this->behatRunner->getExitCode(), 'Command terminated with an error');
+            Assert::assertStringNotMatchesFormat('PHP Warning:', $this->behatRunner->getFullOutput());
+            Assert::assertStringNotMatchesFormat('PHP Notice:', $this->behatRunner->getFullOutput());
         } catch (\Exception $e) {
             echo $this->behatRunner->getFullOutput();
 
@@ -73,7 +73,7 @@ class BehatRunnerContext implements Context
     public function itShouldFail()
     {
         try {
-            PHPUnit::assertNotSame(0, $this->behatRunner->getExitCode(), 'Command succeeded');
+            Assert::assertNotSame(0, $this->behatRunner->getExitCode(), 'Command succeeded');
         } catch (\Exception $e) {
             echo $this->behatRunner->getFullOutput();
 
@@ -89,7 +89,7 @@ class BehatRunnerContext implements Context
         $this->itShouldPass();
 
         foreach ($expectedOutput->getStrings() as $expectedLine) {
-            PHPUnit::assertRegExp('/'.preg_quote($expectedLine, '/').'/sm', $this->behatRunner->getFullOutput());
+            Assert::assertRegExp('/'.preg_quote($expectedLine, '/').'/sm', $this->behatRunner->getFullOutput());
         }
     }
 
@@ -101,7 +101,7 @@ class BehatRunnerContext implements Context
         $this->itShouldFail();
 
         foreach ($expectedOutput->getStrings() as $expectedLine) {
-            PHPUnit::assertRegExp('/'.preg_quote($expectedLine, '/').'/sm', $this->behatRunner->getFullOutput());
+            Assert::assertRegExp('/'.preg_quote($expectedLine, '/').'/sm', $this->behatRunner->getFullOutput());
         }
     }
 

@@ -4,16 +4,17 @@ namespace Zalas\Behat\RestExtension\ServiceContainer;
 
 use Behat\Testwork\ServiceContainer\Configuration\ConfigurationTree;
 use Behat\Testwork\ServiceContainer\Extension;
-use Http\Adapter\Buzz\Client as BuzzAdapter;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Http\Message\MessageFactory;
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * @group integration
  */
-class RestExtensionTest extends \PHPUnit_Framework_TestCase
+class RestExtensionTest extends TestCase
 {
     /**
      * @var RestExtension
@@ -25,7 +26,7 @@ class RestExtensionTest extends \PHPUnit_Framework_TestCase
      */
     private $container;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->extension = new RestExtension();
         $this->container = new ContainerBuilder();
@@ -41,12 +42,10 @@ class RestExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(RestExtension::CONFIG_KEY, $this->extension->getConfigKey());
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage No http client adapter is configured.
-     */
     public function test_it_throws_an_exception_if_no_http_client_is_configured()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('No http client adapter is configured.');
         $this->loadExtension(['discovery' => false]);
     }
 
@@ -61,14 +60,7 @@ class RestExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $this->loadExtension([]);
 
-        $this->assertServiceRegistered('rest.http_client', BuzzAdapter::class);
-    }
-
-    public function test_it_loads_the_buzz_adapter()
-    {
-        $this->loadExtension(['buzz' => true, 'discovery' => false]);
-
-        $this->assertServiceRegistered('rest.http_client', BuzzAdapter::class);
+        $this->assertServiceRegistered('rest.http_client', GuzzleAdapter::class);
     }
 
     public function test_it_loads_the_message_factory()

@@ -21,6 +21,7 @@ final class GuzzleMessageFactoryPlugin implements Plugin
         }
 
         $container->register('rest.message_factory.guzzle', GuzzleMessageFactory::class)
+            ->setPublic(true)
             ->addTag('rest.message_factory');
     }
 
